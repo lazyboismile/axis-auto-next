@@ -1,0 +1,11 @@
+@import '/scss/variables.scss';
+
+#mobile-wrap {
+  .top {
+    height: 100px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+  }
+}
