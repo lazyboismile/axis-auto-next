@@ -277,43 +277,37 @@ const Filter = (props: FilterType) => {
 		async (e: any, type: string) => {
 			const value = e.target.value;
 
-			if (type == 'start') {
-				await router.push(
-					`/model?input=${JSON.stringify({
-						...searchFilter,
-						search: {
-							...searchFilter.search,
-							PeriodsRange: { ...searchFilter.search.periodsRange, start: value },
-						},
-					})}`,
-					`/model?input=${JSON.stringify({
-						...searchFilter,
-						search: {
-							...searchFilter.search,
-							PeriodsRange: { ...searchFilter.search.periodsRange, start: value },
-						},
-					})}`,
-					{ scroll: false },
-				);
+			if (type === 'start') {
+			await router.push(
+				`/model?input=${JSON.stringify({
+				...searchFilter,
+				search: {
+					...searchFilter.search,
+					periodsRange: {   
+					...searchFilter.search.periodsRange,
+					start: value,
+					},
+				},
+				})}`,
+				undefined,
+				{ scroll: false }
+			);
 			} else {
-				await router.push(
-					`/model?input=${JSON.stringify({
-						...searchFilter,
-						search: {
-							...searchFilter.search,
-							PeriodsRange: { ...searchFilter.search.periodsRange, end: value },
-						},
-					})}`,
-					`/model?input=${JSON.stringify({
-						...searchFilter,
-						search: {
-							...searchFilter.search,
-							PeriodsRange: { ...searchFilter.search.periodsRange, end: value },
-						},
-					})}`,
-					{ scroll: false },
-				);
-			}
+			await router.push(
+				`/model?input=${JSON.stringify({
+				...searchFilter,
+				search: {
+					...searchFilter.search,
+					periodsRange: {   
+					...searchFilter.search.periodsRange,
+					end: value,
+					},
+				},
+				})}`,
+				undefined,
+				{ scroll: false }
+			);
+		}
 		},
 		[searchFilter],
 	);
@@ -329,7 +323,7 @@ const Filter = (props: FilterType) => {
 							pricesRange: { ...searchFilter.search.pricesRange, start: value * 1 },
 						},
 					})}`,
-					`/mode?input=${JSON.stringify({
+					`/model?input=${JSON.stringify({
 						...searchFilter,
 						search: {
 							...searchFilter.search,

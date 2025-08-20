@@ -151,7 +151,7 @@ const ModelList: NextPage = ({ initialInput, ...props }: any) => {
                 {models.length !== 0 && (
                   <Stack className="total-result">
                     <Typography>
-                      Total {total} models{total > 1 ? 'ies' : 'y'} available
+                      Total {total} model{total > 1 ? 'les' : ''} available
                     </Typography>
                   </Stack>
                 )}
@@ -171,7 +171,7 @@ ModelList.defaultProps = {
     sort: 'createdAt',
     direction: 'DESC',
     search: {
-      PeriodsRange: {
+      periodsRange: {
         start: 1900,
         end: new Date().getFullYear(),
       },

@@ -1,7 +1,15 @@
 /** IMPORTS **/
 @import "/scss/variables.scss";
+@import '/scss/pc/general.scss';
+
 @import "/scss/pc/homepage/homepage.scss";
+
 @import "/scss/pc/model/model.scss";
+@import "/scss/pc/model/detail.scss";
+
+@import "/scss/pc/agent/agent.scss";
+@import "/scss/pc/agent/detail.scss";
+
 
 @import "~slick-carousel/slick/slick.css";
 @import "~slick-carousel/slick/slick-theme.css";

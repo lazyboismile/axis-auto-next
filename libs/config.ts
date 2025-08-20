@@ -4,11 +4,12 @@ export const availableOptions = ['modelUlezCompliance', 'modelFuelType'];
 
 const thisYear = new Date().getFullYear();
 
-export const modelYears: any = [];
+export const modelYears: number[] = [];
 
-for (let i = 1970; i <= thisYear; i++) {
-    modelYears.push(String(i));
+for (let i = 1900; i <= thisYear; i++) {
+    modelYears.push(i);
 }
+
 
 export const modelOdoMeter = [0, 25, 50, 75, 100, 125, 150, 200, 300, 500];
 

@@ -79,18 +79,20 @@ const ModelCard = () => { //props: ModelCardType
 							<span>Automatice</span>
 						</div>
 						<div>
-							<img src="/img/icons/CVT.svg" alt="" />
-							<span>Automatice</span>
+							<img src="/img/icons/calendar.svg" alt="" />
+							<span>2023</span>
 						</div>
 					</div>
-					<Stack className="divider"></Stack>
-					<Stack className="type-buttons">
-						
-							<Stack className="buttons">
-								
-								
-							</Stack>
-					</Stack>
+					<Divider sx={{ mb: '10px', background: '#585353' }} />
+					<div className={'bott'}>
+						<p>$15000</p>
+						<Box className={'more-details'}>
+							<Link href={'/model/detail'}>
+								<span>View Details</span>
+							</Link>
+							<img src="/img/icons/rightup.svg" alt="" />
+						</Box>
+					</div>
 				</Stack>
 			</Stack>
 		);
