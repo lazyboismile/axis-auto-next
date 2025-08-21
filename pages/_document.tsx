@@ -7,7 +7,7 @@ export default function Document() {
         <meta charSet="UTF-8"/>
         <meta name="title" content="Axis-Auto"/>
         <meta name="robots" content="index, follow"/>
-        <link rel="icon" type="image/png" href="/img/logo/favicon.svg" />
+        <link rel="icon" type="image/png" href="/img/logo/logoWhite.svg" />
         {/** SEO */}
         <meta name="keyword" content={"axis-auto , axis-auto.uz"}/>
         <meta name="description" content={
