@@ -59,6 +59,11 @@ const withLayoutBasic = (Component: any) => {
 					desc = 'Buy / For Rent';
 					bgImage = '/img/banner/header2.svg';
 					break;
+				case '/about':
+					title = 'ABOUT';
+					desc = 'We are glad to see you again!';
+					bgImage = '/img/banner/banner3.jpg';
+					break;
 				case '/cs':
 					title = 'CS';
 					desc = 'We are glad to see you again!';
