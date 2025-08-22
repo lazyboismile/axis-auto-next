@@ -28,6 +28,7 @@ export interface Model {
     modelOdoMeter: number;
     modelOdoUnit: ModelOdoUnit;
     modelUlezCompliance: ModelULEZCompliance;
+    modelDesc: string;
     modelViews: number;
     modelLikes: number;
     modelComments: number;

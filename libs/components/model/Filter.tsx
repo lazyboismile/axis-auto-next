@@ -425,7 +425,7 @@ const Filter = (props: FilterType) => {
 					</p>
 					<Stack
 						className={`model-brand`}
-						style={{ height: showMoreBrand ? '253px' : '115px' }}
+						style={{ height: showMoreBrand ? '663px' : '115px' }}
 						onMouseEnter={() => setShowMoreBrand(true)}
 						onMouseLeave={() => {
 							if (!searchFilter?.search?.brandList) {
@@ -478,7 +478,7 @@ const Filter = (props: FilterType) => {
 					</p>
 					<Stack
 						className={`model-location`}
-						style={{ height: showMoreLocation ? '253px' : '115px' }}
+						style={{ height: showMoreLocation ? '483px' : '115px' }}
 						onMouseEnter={() => setShowMoreLocation(true)}
 						onMouseLeave={() => {
 							if (!searchFilter?.search?.locationList) {
@@ -512,7 +512,7 @@ const Filter = (props: FilterType) => {
 					</p>
 					<Stack
 						className={`model-colour`}
-						style={{ height: showMoreColour ? '253px' : '115px' }}
+						style={{ height: showMoreColour ? '543px' : '115px' }}
 						onMouseEnter={() => setShowMoreColour(true)}
 						onMouseLeave={() => {
 							if (!searchFilter?.search?.colourList) {

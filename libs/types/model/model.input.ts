@@ -1,23 +1,25 @@
 import { Direction } from '../../enums/common.enum';
-import { ModelBodyType, ModelBrand, ModelColour, ModelCurrency, ModelLocation, ModelOdoUnit, ModelStatus, ModelTransmission, ModelULEZCompliance } from "../../enums/model.enum";
+import { ModelBodyType, ModelBrand, ModelColour, ModelCurrency, ModelFuelType, ModelLocation, ModelOdoUnit, ModelStatus, ModelTransmission, ModelULEZCompliance } from "../../enums/model.enum";
 
 
 
 export interface ModelInput {
     modelBrand: ModelBrand;
     modelType: ModelBodyType;
-    modelLocation: ModelLocation;
-    modelAddress: string;
     modelTitle: string;
     modelPrice: number;
     modelYear: number;
-    modelTransmission: ModelTransmission;
-    modelOdometer: number;
-    modelImages: string[];
+    modelLocation: ModelLocation;
+    modelAddress: string;
     modelCurrency?: ModelCurrency;
+    modelColour?: ModelColour;
+    modelTransmission?: ModelTransmission;
+    modelFuelType?: ModelFuelType;
+    modelOdometer: number;
     modelOdoUnit?: ModelOdoUnit;
     modelUlezCompliance?: ModelULEZCompliance;
     modelDesc?: string;
+    modelImages: string[];
     memberId?: string;
 }
 

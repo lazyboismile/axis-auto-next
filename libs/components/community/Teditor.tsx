@@ -1,13 +1,13 @@
-import React, { useMemo, useRef, useState } from 'react';
-import { Box, Button, FormControl, MenuItem, Stack, Typography, Select, TextField } from '@mui/material';
-import { BoardArticleCategory } from '../../enums/board-article.enum';
+import { Box, Button, FormControl, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/react-editor';
+import axios from 'axios';
+import { useRouter } from 'next/router';
+import React, { useMemo, useRef, useState } from 'react';
 import { getJwtToken } from '../../auth';
 import { REACT_APP_API_URL } from '../../config';
-import { useRouter } from 'next/router';
-import axios from 'axios';
+import { BoardArticleCategory } from '../../enums/board-article.enum';
 import { T } from '../../types/common';
-import '@toast-ui/editor/dist/toastui-editor.css';
 
 const TuiEditor = () => {
 	const editorRef = useRef<Editor>(null),
@@ -148,10 +148,30 @@ const TuiEditor = () => {
 			<Stack direction="row" justifyContent="center">
 				<Button
 					variant="contained"
-					color="primary"
-					style={{ margin: '30px', width: '250px', height: '45px' }}
 					onClick={handleRegisterButton}
-				>
+					 sx={{
+						margin: "30px",
+						width: "250px",
+						height: "45px",
+						borderRadius: "12px",
+						background: "linear-gradient(135deg, #FF9F43, #FF6B6B)",
+						fontWeight: 600,
+						fontSize: "16px",
+						textTransform: "none",
+						color: "#fff",
+						boxShadow: "0px 4px 10px rgba(255, 107, 107, 0.4)",
+						transition: "all 0.3s ease",
+						"&:hover": {
+						background: "linear-gradient(135deg, #FF6B6B, #FF9F43)",
+						boxShadow: "0px 6px 16px rgba(255, 107, 107, 0.5)",
+						transform: "translateY(-2px)",
+						},
+						"&:active": {
+						transform: "translateY(1px)",
+						boxShadow: "0px 2px 6px rgba(255, 107, 107, 0.4)",
+						},
+					}}
+					>
 					Register
 				</Button>
 			</Stack>

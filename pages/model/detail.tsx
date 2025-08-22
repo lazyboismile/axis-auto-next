@@ -10,14 +10,14 @@ import { NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import SwiperCore, { Autoplay, Navigation, Pagination } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { userVar } from '../../apollo/store';
 import withLayoutFull from '../../libs/components/layout/LayoutFull';
-// import Review from '../../libs/components/property/Review';
+import Review from '../../libs/components/model/Review';
 import { REACT_APP_API_URL } from '../../libs/config';
 import { CommentGroup } from '../../libs/enums/comment.enum';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
@@ -55,22 +55,22 @@ const ModelDetail: NextPage = ({ initialComment, ...props }: any) => {
 
 	/** LIFECYCLES **/
 	useEffect(() => {
-		if (router.query.id) {
-			setModelId(router.query.id as string);
-			setCommentInquiry({
-				...commentInquiry,
-				search: {
-					commentRefId: router.query.id as string,
-				},
-			});
-			setInsertCommentData({
-				...insertCommentData,
-				commentRefId: router.query.id as string,
-			});
-		}
-	}, [router]);
+	if (router.query.id) {
+		const id = router.query.id as string;
+		setModelId(id);
 
-	useEffect(() => {}, [commentInquiry]);
+		setCommentInquiry({
+		...commentInquiry,
+		search: { commentRefId: id },
+		});
+
+		setInsertCommentData({
+		...insertCommentData,
+		commentRefId: id,
+		});
+	}
+	}, [router.query.id]);
+
 
 	/** HANDLERS **/
 	const changeImageHandler = (image: string) => {
@@ -81,6 +81,30 @@ const ModelDetail: NextPage = ({ initialComment, ...props }: any) => {
 		commentInquiry.page = value;
 		setCommentInquiry({ ...commentInquiry });
 	};
+
+	const doOrder = useCallback(async () => {
+		if (!modelId) {
+			console.error("❌ No modelId set!");
+			return;
+		}
+
+		console.log("✅ Sending modelId to backend:", modelId);
+
+		// later replace with mutation:
+		// try {
+		//   const res = await createOrder({
+		//     variables: { input: { modelId } },
+		//   });
+		//   if (res.data?.createOrder?._id) {
+		//     await router.push("/mypage?category=myOrders");
+		//   }
+		// } catch (err: any) {
+		//   await sweetMixinErrorAlert(err.message || "Failed to create order.");
+		// }
+	}, [modelId, router]);
+
+
+
 
 	if (device === 'mobile') {
 		return <div>MODEL DETAIL PAGE</div>;
@@ -350,9 +374,9 @@ const ModelDetail: NextPage = ({ initialComment, ...props }: any) => {
 												<Typography className={'reviews'}>{commentTotal} reviews</Typography>
 											</Stack>
 										</Stack>
-										{/* <Stack className={'review-list'}>
+										<Stack className={'review-list'}>
 											{modelComments?.map((comment: Comment) => {
-												// return <Review comment={comment} key={comment?._id} />;
+												return <Review comment={comment} key={comment?._id} />;
 											})}
 											<Box component={'div'} className={'pagination-box'}>
 												<MuiPagination
@@ -363,7 +387,7 @@ const ModelDetail: NextPage = ({ initialComment, ...props }: any) => {
 													color="primary"
 												/>
 											</Box>
-										</Stack> */}
+										</Stack>
 									</Stack>
 								)}
 								<Stack className={'leave-review-config'}>
@@ -464,6 +488,29 @@ const ModelDetail: NextPage = ({ initialComment, ...props }: any) => {
 												<clipPath id="clip0_6975_593">
 													<rect width="16" height="16" fill="white" transform="translate(0.5 0.5)" />
 												</clipPath>
+											</defs>
+										</svg>
+									</Button>
+
+									<Button className="bid-message" onClick={doOrder}>
+										<Typography className="title">Make a Bid</Typography>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											width="17"
+											height="17"
+											viewBox="0 0 17 17"
+											fill="none"
+										>
+											<g clipPath="url(#clip0_6975_593)">
+											<path
+												d="M16.0556 0.5H6.2778C6.03214 0.5 5.83334 0.698792 5.83334 0.944458C5.83334 1.19012 6.03214 1.38892 6.2778 1.38892H14.9827L0.630219 15.7413C0.456594 15.915 0.456594 16.1962 0.630219 16.3698C0.71701 16.4566 0.83076 16.5 0.944469 16.5C1.05818 16.5 1.17189 16.4566 1.25872 16.3698L15.6111 2.01737V10.7222C15.6111 10.9679 15.8099 11.1667 16.0556 11.1667C16.3013 11.1667 16.5001 10.9679 16.5001 10.7222V0.944458C16.5 0.698792 16.3012 0.5 16.0556 0.5Z"
+												fill="white"
+											/>
+											</g>
+											<defs>
+											<clipPath id="clip0_6975_593">
+												<rect width="16" height="16" fill="white" transform="translate(0.5 0.5)" />
+											</clipPath>
 											</defs>
 										</svg>
 									</Button>
