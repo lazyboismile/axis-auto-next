@@ -1,9 +1,9 @@
 import decodeJWT from 'jwt-decode';
-// import { initializeApollo } from '../../apollo/client';
+import { initializeApollo } from '../../apollo/client';
 import { userVar } from '../../apollo/store';
+import { LOGIN, SIGN_UP } from '../../apollo/user/mutation';
 import { sweetMixinErrorAlert } from '../sweetAlert';
 import { CustomJwtPayload } from '../types/customJwtPayload';
-// import { LOGIN, SIGN_UP } from '../../apollo/user/mutation';
 
 export function getJwtToken(): any {
 	if (typeof window !== 'undefined') {
@@ -15,9 +15,9 @@ export function setJwtToken(token: string) {
 	localStorage.setItem('accessToken', token);
 }
 
-export const logIn = async (nick: string, password: string): Promise<void> => {
+export const logIn = async (email: string, password: string): Promise<void> => {
 	try {
-		const { jwtToken } = await requestJwtToken({ nick, password });
+		const { jwtToken } = await requestJwtToken({ email, password });
 
 		if (jwtToken) {
 			updateStorage({ jwtToken });
@@ -31,10 +31,10 @@ export const logIn = async (nick: string, password: string): Promise<void> => {
 };
 
 const requestJwtToken = async ({
-	nick,
+	email,
 	password,
 }: {
-	nick: string;
+	email: string;
 	password: string;
 }): Promise<{ jwtToken: string }> => {
 	const apolloClient = await initializeApollo();
@@ -42,7 +42,7 @@ const requestJwtToken = async ({
 	try {
 		const result = await apolloClient.mutate({
 			mutation: LOGIN,
-			variables: { input: { memberNick: nick, memberPassword: password } },
+			variables: { input: { memberEmail: email, memberPassword: password } },
 			fetchPolicy: 'network-only',
 		});
 
@@ -64,9 +64,9 @@ const requestJwtToken = async ({
 	}
 };
 
-export const signUp = async (nick: string, password: string, phone: string, type: string): Promise<void> => {
+export const signUp = async (nick: string, password: string, email: string, type: string): Promise<void> => {
 	try {
-		const { jwtToken } = await requestSignUpJwtToken({ nick, password, phone, type });
+		const { jwtToken } = await requestSignUpJwtToken({ nick, password, email, type });
 
 		if (jwtToken) {
 			updateStorage({ jwtToken });
@@ -82,12 +82,12 @@ export const signUp = async (nick: string, password: string, phone: string, type
 const requestSignUpJwtToken = async ({
 	nick,
 	password,
-	phone,
+	email,
 	type,
 }: {
 	nick: string;
 	password: string;
-	phone: string;
+	email: string;
 	type: string;
 }): Promise<{ jwtToken: string }> => {
 	const apolloClient = await initializeApollo();
@@ -96,7 +96,7 @@ const requestSignUpJwtToken = async ({
 		const result = await apolloClient.mutate({
 			mutation: SIGN_UP,
 			variables: {
-				input: { memberNick: nick, memberPassword: password, memberPhone: phone, memberType: type },
+				input: { memberNick: nick, memberPassword: password, memberEmail: email, memberType: type },
 			},
 			fetchPolicy: 'network-only',
 		});
@@ -146,6 +146,7 @@ export const updateUserInfo = (jwtToken: any) => {
 		memberRank: claims.memberRank,
 		memberArticles: claims.memberArticles,
 		memberPoints: claims.memberPoints,
+		memberSales: claims.memberSales,
 		memberLikes: claims.memberLikes,
 		memberViews: claims.memberViews,
 		memberWarnings: claims.memberWarnings,
@@ -179,6 +180,7 @@ const deleteUserInfo = () => {
 		memberRank: 0,
 		memberArticles: 0,
 		memberPoints: 0,
+		memberSales: 0,
 		memberLikes: 0,
 		memberViews: 0,
 		memberWarnings: 0,

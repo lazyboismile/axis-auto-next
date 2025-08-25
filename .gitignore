@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# axis-auto specifiv
+.vscode/
+/build
+# yarn.lock
+
+# env ignores
+.env.development
+.env.local
+.env
