@@ -133,9 +133,9 @@ const AddModel = ({ initialValues, ...props }: any) => {
 
 	const updateModelHandler = useCallback(async () => {}, [insertModelData]);
 
-	if (user?.memberType !== 'AGENT') {
-		router.back();
-	}
+	// if (user?.memberType !== 'AGENT') {
+	// 	router.back();
+	// }
 
 	console.log('+insertModelData', insertModelData);
 

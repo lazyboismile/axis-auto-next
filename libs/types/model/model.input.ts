@@ -60,7 +60,7 @@ export interface AgentModelsInquiry {
 interface ALPISearch {
     modelStatus?: ModelStatus;
     modelBrandList?: ModelBrand[];
-    modelTypeList: ModelBodyType[]
+    modelTypeList?: ModelBodyType[]
     modelLocationList?: ModelLocation[];
 }
 

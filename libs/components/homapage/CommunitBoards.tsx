@@ -7,11 +7,11 @@ import CommunityCard from './CommunityCard';
 
 const CommunityBoards = ({ initialInput = [], ...props }: any) => {
 	const device = useDeviceDetect();
-	// const [searchCommunity, setSearchCommunity] = useState({
-	// 	page: 1,
-	// 	sort: 'articleViews',
-	// 	direction: 'DESC',
-	// });
+	const [searchCommunity, setSearchCommunity] = useState({
+		page: 1,
+		sort: 'articleViews',
+		direction: 'DESC',
+	});
 	const [newsArticles, setNewsArticles] = useState<BoardArticle[]>(
         initialInput.length ? initialInput : [1, 2, 3]
     );
