@@ -1,24 +1,42 @@
+import { useQuery } from '@apollo/client';
 import EastIcon from '@mui/icons-material/East';
 import WestIcon from '@mui/icons-material/West';
 import { Box, Stack } from '@mui/material';
 import React, { useState } from 'react';
 import { Autoplay, Navigation, Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { GET_MODELS } from '../../../apollo/user/query';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
+import { T } from '../../types/common';
+import { Model } from '../../types/model/model';
+import { ModelsInquiry } from '../../types/model/model.input';
 import NewModelCard from './NewModelCard';
 
-// interface NewModelsProps {
-// 	initialInput: ModelsInquiry;
-// }
+interface NewModelsProps {
+	initialInput: ModelsInquiry;
+}
 
-const NewModels = ({ initialInput = [], ...props }: any) => {
-	// const { initialInput } = props;
+const NewModels = (props: NewModelsProps) => {
+	const { initialInput } = props;
 	const device = useDeviceDetect();
-	const [newModels, setNewModels] = useState<number[]>(
-		initialInput.length ? initialInput : [1, 2, 3, 4, 5, 6, 7]
-	);
+	const [newModels, setNewModels] = useState<Model[]>([]);
 
 	/** APOLLO REQUESTS **/
+
+	const {
+		loading: getModelsLoading,
+		data: getModelsData,
+		error: getModelsError,
+		refetch: getModelsRefetch,
+	} = useQuery(GET_MODELS, {
+		fetchPolicy: "cache-and-network",
+		variables: { input: initialInput },
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setNewModels(data?.getModels?.list || []);
+		}
+	});
+	
 	/** HANDLERS **/
 
 
@@ -30,6 +48,9 @@ const NewModels = ({ initialInput = [], ...props }: any) => {
 						<span>Upcoming Cars</span>
 					</Stack>
 					<Stack className={'card-box'}>
+						{newModels.length === 0 ? (
+							<p className={'no-new'}>No new upcoming to show</p>
+						) : (
 						<Swiper
 							className={'new-model-swiper'}
 							slidesPerView={'auto'}
@@ -37,16 +58,14 @@ const NewModels = ({ initialInput = [], ...props }: any) => {
 							spaceBetween={25}
 							modules={[Autoplay]}
 						>
-							{newModels.length === 0 ? (
-								<p>No new properties to show</p>
-								) : (
-								newModels.map((model, index) => (
-									<SwiperSlide key={index} className="new-model-slide">
-										<NewModelCard />
+							
+								{newModels.map((model: Model) => (
+									<SwiperSlide key={model._id} className="new-model-slide">
+										<NewModelCard model={model} />
 									</SwiperSlide>
-								))
-							)}
+								))}
 						</Swiper>
+						)}
 					</Stack>
 				</Stack>
 			</Stack>
@@ -61,29 +80,29 @@ const NewModels = ({ initialInput = [], ...props }: any) => {
 						</Box>
 					</Stack>
 					<Stack className={'card-box'}>
-						<Swiper
-							className={'new-model-swiper'}
-							slidesPerView={'auto'}
-							spaceBetween={25}
-							modules={[Autoplay, Navigation, Pagination]}
-							navigation={{
-								nextEl: '.swiper-new-next',
-								prevEl: '.swiper-new-prev',
-							}}
-							pagination={{
-								el: '.swiper-new-pagination',
-							}}
-						>
-							{newModels.length === 0 ? (
-								<p>No new properties to show</p>
-								) : (
-								newModels.map((model, index) => (
-									<SwiperSlide key={index} className="new-model-slide">
-										<NewModelCard />
-									</SwiperSlide>
-								))
-							)}
-						</Swiper>
+						{newModels.length === 0 ? (
+							<p className={'no-new'}>No new upcoming to show</p>
+						) : (
+							<Swiper
+								className={'new-model-swiper'}
+								slidesPerView={'auto'}
+								spaceBetween={25}
+								modules={[Autoplay, Navigation, Pagination]}
+								navigation={{
+									nextEl: '.swiper-new-next',
+									prevEl: '.swiper-new-prev',
+								}}
+								pagination={{
+									el: '.swiper-new-pagination',
+								}}
+							>
+									{newModels.map((model: Model) => (
+										<SwiperSlide key={model._id} className="new-model-slide">
+											<NewModelCard model={model}/>
+										</SwiperSlide>
+									))}
+							</Swiper>
+						)}
 					</Stack>
 					<Stack className={'pagination-box'}>
 						<WestIcon className={'swiper-new-prev'} />

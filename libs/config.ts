@@ -21,4 +21,6 @@ export const Messages = {
     error5: 'Only images with jpeg, jpg, png format allowed!',
 };
 
-const topModelRank = 50;
+export const topModelRank = 2;
+export const topModelOdometer = 10000;
+export const modelDescShort = 50;

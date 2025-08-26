@@ -15,7 +15,9 @@ interface CommunityCardProps {
 const CommunityCard = (props: CommunityCardProps) => {
 	const { vertical, article, index } = props;
 	const device = useDeviceDetect();
-	const articleImage = '/img/banner/aboutBanner.svg';
+	const articleImage = article?.articleImage
+		? `${process.env.REACT_APP_API_URL}/${article?.articleImage}`
+		: '/img/event.jpg';
 
 	if (device === 'mobile') {
 		return <div>COMMUNITY CARD (MOBILE)</div>;
@@ -25,13 +27,12 @@ const CommunityCard = (props: CommunityCardProps) => {
 				<Link href={`/community/detail?articleCategory=${article?.articleCategory}&id=${article?._id}`}>
 					<Box component={'div'} className={'vertical-card'}>
                         <div
-                        className="community-img"
-                        style={{ backgroundImage: "url('/img/banner/header4.svg')" }}
-                        >
-                            <div>1</div>
+							className="community-img"
+							style={{ backgroundImage: `url(${articleImage})` }}>
+							<div>{index + 1}</div>
                         </div>
-						<strong>Title</strong>
-						<span>Free Board</span>
+						<strong>{article?.articleTitle}</strong>
+						<span>News Board</span>
 					</Box>
 				</Link>
 			);
@@ -43,7 +44,7 @@ const CommunityCard = (props: CommunityCardProps) => {
 							<img src={articleImage} alt="" />
 							<div>
 								<strong>{article.articleTitle}</strong>
-								<span>{dayjs("2000-12-12").format("DD.MM.YY")}</span>
+								<span>{dayjs(article.createdAt).format("DD.MM.YYYY")}</span>
 							</div>
 						</Box>
 					</Link>

@@ -439,7 +439,8 @@ body::-webkit-scrollbar {
 							margin: 0 17px 37px 17px;
 						}
 						span {
-							align-items: center;
+							position: relative;
+							left: -150px;
 							color: rgba(5, 11, 32, 1);
 
 							font-family: $font-dm;
@@ -447,7 +448,7 @@ body::-webkit-scrollbar {
 							font-weight: 500;
 							line-height: 21.6px;
 							letter-spacing: 0%;
-							text-align: center;
+							text-align: left;
 						}
 					}
 				}

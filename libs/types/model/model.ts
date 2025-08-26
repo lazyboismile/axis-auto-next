@@ -14,7 +14,7 @@ export interface TotalCounter {
 export interface Model {
     _id: string;
     modelBrand: ModelBrand;
-    modelType: ModelBodyType;
+    modelBodyType: ModelBodyType;
     modelStatus: ModelStatus;
     modelLocation: ModelLocation;
     modelAddress: string;
@@ -25,7 +25,7 @@ export interface Model {
     modelColour: ModelColour;
     modelTransmission: ModelTransmission;
     modelFuelType: ModelFuelType;
-    modelOdoMeter: number;
+    modelOdometer: number;
     modelOdoUnit: ModelOdoUnit;
     modelUlezCompliance: ModelULEZCompliance;
     modelDesc: string;

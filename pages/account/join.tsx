@@ -44,7 +44,7 @@ const Join: NextPage = () => {
 	const doLogin = useCallback(async () => {
 		console.warn(input);
 		try {
-			await logIn(input.nick, input.password);
+			await logIn(input.email, input.password);
 			await router.push(`${router.query.referrer ?? '/'}`);
 		} catch (err: any) {
 			await sweetMixinErrorAlert(err.message);
@@ -81,12 +81,26 @@ const Join: NextPage = () => {
 								<p>{loginView ? 'Sign in' : 'Sign Up'} in with this account across the following sites.</p>
 							</Box>
 							<Box className={'input-wrap'}>
+								{!loginView && (
+									<div className={'input-box'}>
+										<span>Name</span>
+										<input
+											type="text"
+											placeholder={'Enter Name'}
+											onChange={(e) => handleInput('nick', e.target.value)}
+											required={true}
+											onKeyDown={(event) => {
+												if (event.key == 'Enter') doSignUp();
+											}}
+										/>
+									</div>
+								)}
 								<div className={'input-box'}>
-									<span>Nickname</span>
+									<span>Email</span>
 									<input
 										type="text"
-										placeholder={'Enter Nickname'}
-										onChange={(e) => handleInput('nick', e.target.value)}
+										placeholder={'Enter Email'}
+										onChange={(e) => handleInput('email', e.target.value)}
 										required={true}
 										onKeyDown={(event) => {
 											if (event.key == 'Enter' && loginView) doLogin();
@@ -97,7 +111,7 @@ const Join: NextPage = () => {
 								<div className={'input-box'}>
 									<span>Password</span>
 									<input
-										type="text"
+										type="password"
 										placeholder={'Enter Password'}
 										onChange={(e) => handleInput('password', e.target.value)}
 										required={true}
@@ -107,20 +121,6 @@ const Join: NextPage = () => {
 										}}
 									/>
 								</div>
-								{!loginView && (
-									<div className={'input-box'}>
-										<span>Email</span>
-										<input
-											type="email"
-											placeholder={'Enter Email'}
-											onChange={(e) => handleInput('email', e.target.value)}
-											required={true}
-											onKeyDown={(event) => {
-												if (event.key == 'Enter') doSignUp();
-											}}
-										/>
-									</div>
-								)}
 							</Box>
 							<Box className={'register'}>
 								{!loginView && (
@@ -170,7 +170,7 @@ const Join: NextPage = () => {
 									<Button
 										variant="contained"
 										endIcon={<img src="/img/icons/rightup.svg" alt="" />}
-										disabled={input.nick == '' || input.password == ''}
+										disabled={input.email == '' || input.password == ''}
 										onClick={doLogin}
 									>
 										Sign In

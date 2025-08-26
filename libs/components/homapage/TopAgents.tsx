@@ -1,26 +1,44 @@
+import { useQuery } from '@apollo/client';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Box, Stack } from '@mui/material';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { Autoplay, Navigation, Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { GET_AGENTS } from '../../../apollo/user/query';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
+import { T } from '../../types/common';
 import { Member } from '../../types/member/member';
+import { AgentsInquiry } from '../../types/member/member.input';
 import TopAgentCard from './TopAgentCard';
 
-// interface TopAgentsProps {
-// 	initialInput: AgentsInquiry;
-// }
+interface TopAgentsProps {
+	initialInput: AgentsInquiry;
+}
 
-const TopAgents = ({ initialInput = [], ...props }: any) => { // props: TopAgentsProps
-	// const { initialInput } = props;
+const TopAgents = (props: TopAgentsProps) => { 
+	const { initialInput } = props;
 	const device = useDeviceDetect();
 	const router = useRouter();
-	const [topAgents, setTopAgents] = useState<Member[]>(
-        initialInput.length ? initialInput : [1, 2, 3, 4, 5, 6, 7]
-    );
+	const [topAgents, setTopAgents] = useState<Member[]>([]);
 
 	/** APOLLO REQUESTS **/
+
+	const {
+		loading: getAgentsLoading,
+		data: getAgentsData,
+		error: getAgentsError,
+		refetch: getAgentsRefetch,
+	} = useQuery(GET_AGENTS, {
+		fetchPolicy: "cache-and-network",
+		variables: { input: initialInput },
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setTopAgents(data?.getAgents?.list);
+		}
+	});
+	
 	/** HANDLERS **/
 
 	if (device === 'mobile') {
@@ -38,10 +56,10 @@ const TopAgents = ({ initialInput = [], ...props }: any) => { // props: TopAgent
 							spaceBetween={29}
 							modules={[Autoplay]}
 						>
-							{topAgents.map((agent, index) => {
+							{topAgents.map((agent: Member) => {
 								return (
-									<SwiperSlide className={'top-agents-slide'} key={index}>
-										<TopAgentCard />
+									<SwiperSlide className={'top-agents-slide'} key={agent?._id}>
+										<TopAgentCard agent={agent} key={agent?.memberNick} />
 									</SwiperSlide>
 								);
 							})}
@@ -59,10 +77,12 @@ const TopAgents = ({ initialInput = [], ...props }: any) => { // props: TopAgent
 							<span>Top Agents</span>
 						</Box>
 						<Box component={'div'} className={'right'}>
-							<div className={'more-box'}>
-								<span>See All Agents</span>
-								<img src="/img/icons/rightup.svg" alt="" />
-							</div>
+							<Link href={'/agent'}>
+								<div className={'more-box'}>
+									<span>See All Agents</span>
+									<img src="/img/icons/rightup.svg" alt="" />
+								</div>
+							</Link>
 						</Box>
 					</Stack>
 					<Stack className={'wrapper'}>
@@ -80,13 +100,13 @@ const TopAgents = ({ initialInput = [], ...props }: any) => { // props: TopAgent
 									prevEl: '.swiper-agents-prev',
 								}}
 							>
-								{topAgents.map((agent, index) => {
-                                    return (
-                                        <SwiperSlide className={'top-agents-slide'} key={index}>
-                                            <TopAgentCard />
-                                        </SwiperSlide>
-                                    );
-                                })}
+								{topAgents.map((agent: Member) => {
+									return (
+										<SwiperSlide className={'top-agents-slide'} key={agent?._id}>
+											<TopAgentCard agent={agent} key={agent?.memberNick} />
+										</SwiperSlide>
+									);
+								})}
 							</Swiper>
 						</Box>
 						<Box component={'div'} className={'switch-btn swiper-agents-next'}>

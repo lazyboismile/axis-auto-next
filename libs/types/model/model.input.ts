@@ -5,7 +5,7 @@ import { ModelBodyType, ModelBrand, ModelColour, ModelCurrency, ModelFuelType, M
 
 export interface ModelInput {
     modelBrand: ModelBrand;
-    modelType: ModelBodyType;
+    modelBodyType: ModelBodyType;
     modelTitle: string;
     modelPrice: number;
     modelYear: number;

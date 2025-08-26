@@ -1,25 +1,46 @@
+import { useQuery } from '@apollo/client';
 import EastIcon from '@mui/icons-material/East';
 import WestIcon from '@mui/icons-material/West';
 import { Box, Stack } from '@mui/material';
 import React, { useState } from 'react';
 import { Autoplay, Navigation, Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { GET_MODELS } from '../../../apollo/user/query';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
+import { T } from '../../types/common';
+import { Model } from '../../types/model/model';
+import { ModelsInquiry } from '../../types/model/model.input';
 import TopModelCard from './TopModelCard';
 
-// interface TopModelsProps {
-// 	initialInput: ModelsInquiry;
-// }
+interface TopModelsProps {
+	initialInput: ModelsInquiry;
+}
 
-const TopModels = ({ initialInput = [], ...props }: any) => {
-	// const { initialInput } = props;
+const TopModels = (props: TopModelsProps) => {
+	const { initialInput } = props;
 	const device = useDeviceDetect();
-	const [topModels, setTopModels] = useState<number[]>(
-		initialInput.length ? initialInput : [1, 2, 3, 4, 5, 6, 7]
-	);
+	const [topModels, setTopModels] = useState<Model[]>([]);
 
 	/** APOLLO REQUESTS **/
+	
+	const {
+		loading: getModelsLoading,
+		data: getModelsData,
+		error: getModelsError,
+		refetch: getModelsRefetch,
+	} = useQuery(GET_MODELS, {
+		fetchPolicy: "cache-and-network",
+		variables: { input: initialInput },
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setTopModels(data?.getModels?.list);
+		}
+	});
+
 	/** HANDLERS **/
+
+	if (topModels) console.log('topModels:', topModels);
+	if (!topModels) return null;
 
 
 	if (device === 'mobile') {
@@ -30,6 +51,9 @@ const TopModels = ({ initialInput = [], ...props }: any) => {
 						<span>Recommended Cars For You</span>
 					</Stack>
 					<Stack className={'card-box'}>
+						{topModels.length === 0 ? (
+								<p  className='no-top'>No top recommended to show</p>
+						) : (
 						<Swiper
 							className={'top-model-swiper'}
 							slidesPerView={'auto'}
@@ -37,16 +61,15 @@ const TopModels = ({ initialInput = [], ...props }: any) => {
 							spaceBetween={25}
 							modules={[Autoplay]}
 						>
-							{topModels.length === 0 ? (
-								<p>No top properties to show</p>
-								) : (
-								topModels.map((model, index) => (
-									<SwiperSlide key={index} className="top-model-slide">
-										<TopModelCard />
+							 
+								{topModels.map((model: Model) => (
+									<SwiperSlide key={model._id} className="top-model-slide">
+										<TopModelCard model={model}/>
 									</SwiperSlide>
-								))
-							)}
+								))}
+							
 						</Swiper>
+					)}
 					</Stack>
 				</Stack>
 			</Stack>
@@ -60,10 +83,13 @@ const TopModels = ({ initialInput = [], ...props }: any) => {
 							<p>Recommended Cars For You</p>
 						</Box>
 					</Stack>
-					<Stack className={'card-box'}>
-						<Swiper
-							className={'top-model-swiper'}
-							slidesPerView={'auto'}
+					<Stack className="card-box">
+						{topModels.length === 0 ? (
+							<p className='no-top'>No top model to show</p>
+						) : (
+							<Swiper
+							className="top-model-swiper"
+							slidesPerView="auto"
 							spaceBetween={25}
 							modules={[Autoplay, Navigation, Pagination]}
 							navigation={{
@@ -73,18 +99,16 @@ const TopModels = ({ initialInput = [], ...props }: any) => {
 							pagination={{
 								el: '.swiper-top-pagination',
 							}}
-						>
-							{topModels.length === 0 ? (
-								<p>No top properties to show</p>
-								) : (
-								topModels.map((model, index) => (
-									<SwiperSlide key={index} className="top-model-slide">
-										<TopModelCard />
-									</SwiperSlide>
-								))
-							)}
-						</Swiper>
+							>
+							{topModels.map((model: Model) => (
+								<SwiperSlide key={model._id} className="top-model-slide">
+								<TopModelCard model={model} />
+								</SwiperSlide>
+							))}
+							</Swiper>
+						)}
 					</Stack>
+
 					<Stack className={'pagination-box'}>
 						<WestIcon className={'swiper-top-prev'} />
 						<div className={'swiper-top-pagination'}></div>
@@ -99,8 +123,8 @@ const TopModels = ({ initialInput = [], ...props }: any) => {
 TopModels.defaultProps = {
 	initialInput: {
 		page: 1,
-		limit: 7,
-		sort: 'modelLikes',
+		limit: 8,
+		sort: 'modelRank',
 		direction: 'DESC',
 		search: {},
 	},

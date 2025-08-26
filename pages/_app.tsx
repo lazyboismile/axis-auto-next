@@ -1,18 +1,28 @@
-import { createTheme, CssBaseline } from "@mui/material";
-import { ThemeProvider } from "@mui/material/styles";
-import type { AppProps } from "next/app";
-import { useState } from "react";
-import "../scss/app.scss";
-import { light } from "../scss/MaterialTheme";
-import "../scss/pc/main.scss";
+import { ApolloProvider } from '@apollo/client';
+import { CssBaseline } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { appWithTranslation } from 'next-i18next';
+import type { AppProps } from 'next/app';
+import React, { useState } from 'react';
+import { useApollo } from '../apollo/client';
+import '../scss/app.scss';
+import { light } from '../scss/MaterialTheme';
+import '../scss/mobile/main.scss';
+import '../scss/pc/main.scss';
 
-export default function App({ Component, pageProps }: AppProps) {
-  // @ts-ignore
-  const [theme, setTheme] = useState(createTheme(light));
-  return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Component {...pageProps} />
-    </ThemeProvider>
-  );
-}
+const App = ({ Component, pageProps }: AppProps) => {
+	// @ts-ignore
+	const [theme, setTheme] = useState(createTheme(light));
+	const client = useApollo(pageProps.initialApolloState);
+
+	return (
+		<ApolloProvider client={client}>
+			<ThemeProvider theme={theme}>
+				<CssBaseline />
+				<Component {...pageProps} />
+			</ThemeProvider>
+		</ApolloProvider>
+	);
+};
+
+export default appWithTranslation(App);
