@@ -23,6 +23,14 @@ const TopModelCard = (props: TopModelCardProps) => {
 
 	/** HANDLERS **/
 
+	const pushDetailHandler = async (modelId: string) => {
+		console.log('modelId:', modelId)
+		await router.push({
+			pathname: '/model/detail',
+			query: {id: modelId} 
+		});
+	}
+
 	if (device === 'mobile') {
 		return (
 			<Stack className="top-card-box" key={model._id}>
@@ -30,7 +38,7 @@ const TopModelCard = (props: TopModelCardProps) => {
 					component={'div'}
 					className={'card-img'}
 					style={{ backgroundImage: `url(${REACT_APP_API_URL}/${model?.modelImages[0]})` }}
-					key={model._id}
+					onClick={() => pushDetailHandler(model._id)}
 				>
 						{model && model?.modelRank >= topModelRank &&(
 							<div className="status">
@@ -46,7 +54,7 @@ const TopModelCard = (props: TopModelCardProps) => {
 						<Divider sx={{ mt: '15px', mb: '17px', background: '#585353' }} />
 				</Box>
 				<Box component={'div'} className={'info'}>
-					<strong className={'title'}>{model.modelYear} - {model.modelTitle}</strong>
+					<strong className={'title'} onClick={() => pushDetailHandler(model._id)}>{model.modelYear} - {model.modelTitle}</strong>
 					<p className={'desc'}>{model.modelDesc
 						? model.modelDesc.length > modelDescShort
 						? model.modelDesc.substring(0, modelDescShort) + "..."
@@ -89,6 +97,7 @@ const TopModelCard = (props: TopModelCardProps) => {
 					component={'div'}
 					className={'card-img'}
 					style={{ backgroundImage: `url(${REACT_APP_API_URL}/${model?.modelImages[0]})` }}
+					onClick={() => pushDetailHandler(model._id)}
 				>
 						{model && model?.modelRank >= topModelRank &&(
 							<div className="status">
@@ -104,7 +113,7 @@ const TopModelCard = (props: TopModelCardProps) => {
 						</div>
 				</Box>
 				<Box component={'div'} className={'info'}>
-					<strong className={'title'}>{model.modelYear} - {model.modelTitle}</strong>
+					<strong className={'title'} onClick={() => pushDetailHandler(model._id)}>{model.modelYear} - {model.modelTitle}</strong>
 					<p className={'desc'}>{model.modelDesc
 						? model.modelDesc.length > modelDescShort
 						? model.modelDesc.substring(0, modelDescShort) + "..."

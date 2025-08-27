@@ -1,11 +1,14 @@
-import { useReactiveVar } from '@apollo/client';
+import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { Pagination, Stack, Typography } from '@mui/material';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { userVar } from '../../../apollo/store';
+import { UPDATE_MODEL } from '../../../apollo/user/mutation';
+import { GET_AGENT_MODELS } from '../../../apollo/user/query';
 import { ModelStatus } from '../../enums/model.enum';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
+import { sweetConfirmAlert, sweetErrorHandling } from '../../sweetAlert';
 import { T } from '../../types/common';
 import { Model } from '../../types/model/model';
 import { AgentModelsInquiry } from '../../types/model/model.input';
@@ -20,6 +23,22 @@ const MyModels: NextPage = ({ initialInput, ...props }: any) => {
 	const router = useRouter();
 
 	/** APOLLO REQUESTS **/
+	const [updateModel] = useMutation(UPDATE_MODEL);
+
+	const {
+		loading: getAgentModelsLoading,
+		data: getAgentModelsData,
+		error: getAgentModelsError,
+		refetch: getAgentModelsRefetch,
+	} = useQuery(GET_AGENT_MODELS, {
+		fetchPolicy: "network-only",
+		variables: { input: searchFilter },
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setAgentModels(data?.getAgentModels?.list);
+			setTotal(data?.getAgentModels?.metaCounter[0]?.total ?? 0);
+		}
+	});
 
 	/** HANDLERS **/
 	const paginationHandler = (e: T, value: number) => {
@@ -30,13 +49,31 @@ const MyModels: NextPage = ({ initialInput, ...props }: any) => {
 		setSearchFilter({ ...searchFilter, search: { modelStatus: value } });
 	};
 
-	const deleteModelHandler = async (id: string) => {};
+	const deleteModelHandler = async (id: string) => {
+		try {
+			if (await sweetConfirmAlert('Are you sure you want to delete this model?')) {
+				await updateModel({ variables: { input: { _id: id, modelStatus: 'DELETE' } } });
+				await getAgentModelsRefetch({ input: searchFilter });
+			}
+		} catch (err: any) {
+			await sweetErrorHandling(err);
+		}
+	};
 
-	const updateModelHandler = async (status: string, id: string) => {};
+	const updateModelHandler = async (status: string, id: string) => {
+		try {
+			if (await sweetConfirmAlert(`Are you sure you want to update the ${status}?`)) {
+				await updateModel({ variables: { input: { _id: id, modelStatus: status } } });
+				await getAgentModelsRefetch({ input: searchFilter });
+			}
+		} catch (err: any) {
+			await sweetErrorHandling(err);
+		}
+	};
 
-	// if (user?.memberType !== 'AGENT') {
-	// 	router.back();
-	// }
+	if (user?.memberType !== 'AGENT') {
+		router.back();
+	}
 
 	if (device === 'mobile') {
 		return <div>AxisAuto MODELS MOBILE</div>;
@@ -70,7 +107,9 @@ const MyModels: NextPage = ({ initialInput, ...props }: any) => {
 							<Typography className="title-text">Date Published</Typography>
 							<Typography className="title-text">Status</Typography>
 							<Typography className="title-text">View</Typography>
-							<Typography className="title-text">Action</Typography>
+							{searchFilter?.search.modelStatus === 'LIVE' && (
+								<Typography className="title-text">Action</Typography>
+							)}
 						</Stack>
 
 						{agentModels?.length === 0 ? (
@@ -97,7 +136,18 @@ const MyModels: NextPage = ({ initialInput, ...props }: any) => {
 										count={Math.ceil(total / searchFilter.limit)}
 										page={searchFilter.page}
 										shape="circular"
-										color="primary"
+										sx={{
+											'& .MuiPaginationItem-root': {
+												color: '#405FF2',
+											},
+											'& .MuiPaginationItem-root.Mui-selected': {
+												backgroundColor: '#405FF2',
+												color: '#fff',
+											},
+											'& .MuiPaginationItem-root.Mui-selected:hover': {
+												backgroundColor: '#3249c7',
+											},
+										}}
 										onChange={paginationHandler}
 									/>
 								</Stack>

@@ -41,7 +41,7 @@ export const sweetConfirmAlert = (msg: string) => {
             },
             showCancelButton: true,
             showConfirmButton: true,
-            confirmButtonColor: '#e92C28',
+            confirmButtonColor: '#ff7b00',
             cancelButtonColor: '#bdbdbd',
         }).then((response) => {
             if (response?.isConfirmed) resolve(true);

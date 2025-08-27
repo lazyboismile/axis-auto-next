@@ -54,7 +54,7 @@ const NewModelCard = (props: NewModelCardProps) => {
 						<Divider sx={{ mt: '15px', mb: '17px', background: '#585353' }} />
 				</Box>
 				<Box component={'div'} className={'info'}>
-					<strong className={'title'}>{model.modelYear} - {model.modelTitle}</strong>
+					<strong className={'title'} onClick={() => pushDetailHandler(model._id)}>{model.modelYear} - {model.modelTitle}</strong>
 					<p className={'desc'}>{model.modelDesc
 						? model.modelDesc.length > modelDescShort
 						? model.modelDesc.substring(0, modelDescShort) + "..."
@@ -113,7 +113,7 @@ const NewModelCard = (props: NewModelCardProps) => {
 						</div>
 				</Box>
 				<Box component={'div'} className={'info'}>
-					<strong className={'title'}>{model.modelYear} - {model.modelTitle}</strong>
+					<strong className={'title'} onClick={() => pushDetailHandler(model._id)}>{model.modelYear} - {model.modelTitle}</strong>
 					<p className={'desc'}>{model.modelDesc
 						? model.modelDesc.length > modelDescShort
 						? model.modelDesc.substring(0, modelDescShort) + "..."

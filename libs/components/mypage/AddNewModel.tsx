@@ -1,14 +1,16 @@
-import { useReactiveVar } from '@apollo/client';
+import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { Button, Stack, Typography } from '@mui/material';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { userVar } from '../../../apollo/store';
+import { CREATE_MODEL, UPDATE_MODEL } from '../../../apollo/user/mutation';
+import { GET_MODEL } from '../../../apollo/user/query';
 import { getJwtToken } from '../../auth';
 import { modelYears, REACT_APP_API_URL } from '../../config';
 import { ModelBodyType, ModelBrand, ModelColour, ModelCurrency, ModelFuelType, ModelLocation, ModelOdoUnit, ModelTransmission, ModelULEZCompliance } from '../../enums/model.enum';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
-import { sweetMixinErrorAlert } from '../../sweetAlert';
+import { sweetErrorHandling, sweetMixinErrorAlert, sweetMixinSuccessAlert } from '../../sweetAlert';
 import { ModelInput } from '../../types/model/model.input';
 
 const AddModel = ({ initialValues, ...props }: any) => {
@@ -29,7 +31,18 @@ const AddModel = ({ initialValues, ...props }: any) => {
 	const user = useReactiveVar(userVar);
 
 	/** APOLLO REQUESTS **/
-	let getModelData: any, getModelLoading: any;
+	const [createModel] = useMutation(CREATE_MODEL);
+	const [updateModel] = useMutation(UPDATE_MODEL);
+
+	const {
+		loading: getModelLoading,
+		data: getModelData,
+		error: getModelError,
+		refetch: getModelRefetch,
+	} = useQuery(GET_MODEL, {
+		fetchPolicy: 'network-only',
+		variables: { input: router.query.modelId },
+	});
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -129,13 +142,52 @@ const AddModel = ({ initialValues, ...props }: any) => {
 		}
 	};
 
-	const insertModelHandler = useCallback(async () => {}, [insertModelData]);
+	const insertModelHandler = useCallback(async () => {
+		try {
+			const result = await createModel({
+				variables: {
+					input: insertModelData,
+				},
+			});
 
-	const updateModelHandler = useCallback(async () => {}, [insertModelData]);
+			await sweetMixinSuccessAlert('Model created successfully!');
+			await router.push({
+				pathname: '/mypage',
+				query: {
+					category: 'myModels'
+				}
+			})
+		} catch (err: any) {
+			sweetErrorHandling(err).then();
+		}
+	}, [insertModelData]);
 
-	// if (user?.memberType !== 'AGENT') {
-	// 	router.back();
-	// }
+	const updateModelHandler = useCallback(async () => {
+		try {
+			// @ts-ignore
+			insertModelData._id = getModelData?.getModel?._id;
+			const { ...modelUpdateInput } = insertModelData;
+			const result = await updateModel({
+				variables: {
+					input: modelUpdateInput,
+				},
+			});
+
+			await sweetMixinSuccessAlert('Model updated successfully!');
+			await router.push({
+				pathname: '/mypage',
+				query: {
+					category: 'myModels',
+				},
+			});
+		} catch (err: any) {
+			sweetErrorHandling(err).then();
+		}
+	}, [insertModelData]);
+
+	if (user?.memberType !== 'AGENT') {
+		router.back();
+	}
 
 	console.log('+insertModelData', insertModelData);
 

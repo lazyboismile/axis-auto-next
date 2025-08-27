@@ -4,16 +4,19 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { userVar } from '../../../apollo/store';
+import { REACT_APP_API_URL } from '../../config';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Model } from '../../types/model/model';
 import { formatterStr } from '../../utils';
+;
 
 interface ModelBigCardProps {
 	model: Model;
+	likeModelHandler?: any;
 }
 
 const ModelBigCard = (props: ModelBigCardProps) => {
-	const { model } = props;
+	const { model, likeModelHandler } = props;
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const router = useRouter();
@@ -31,8 +34,7 @@ const ModelBigCard = (props: ModelBigCardProps) => {
 				<Box
 					component={'div'}
 					className={'card-img'}
-					// style={{ backgroundImage: `url(${REACT_APP_API_URL}/${model?.modelImages?.[0]})` }}
-                    style={{ backgroundImage: `url('/img/banner/header1.svg')` }}
+					style={{ backgroundImage: `url(${REACT_APP_API_URL}/${model?.modelImages?.[0]})` }}
 				>
 					{model?.modelRank && model?.modelRank >= 50 && (
 						<div className={'status'}>
@@ -41,7 +43,9 @@ const ModelBigCard = (props: ModelBigCardProps) => {
 						</div>
 					)}
 
-					<div className={'price'}>${formatterStr(model?.modelPrice)}12000</div>
+					<div className={'price'}>
+						${formatterStr(model?.modelPrice)}
+					</div>
 				</Box>
 				<Box component={'div'} className={'info'}>
 					<strong className={'title'}>{model?.modelTitle}</strong>
@@ -49,22 +53,22 @@ const ModelBigCard = (props: ModelBigCardProps) => {
 					<div className={'options'}>
 						<div>
 							<img src="/img/icons/miles.svg" alt="" />
-							<span>15 miles</span>
+							<span>{formatterStr(model?.modelOdometer ?? 0)} {model?.modelOdoUnit === 'KILOMETERS' ? 'km' : 'mi'}</span>
 						</div>
 						<div>
 							<img src="/img/icons/fuelType.svg" alt="" />
-							<span>Petrol</span>
+							<span>{model?.modelFuelType}</span>
 						</div>
 						<div>
 							<img src="/img/icons/CVT.svg" alt="" />
-							<span>Automatice</span>
+							<span>{model?.modelTransmission}</span>
 						</div>
 					</div>
 					<Divider sx={{ mt: '15px', mb: '17px' }} />
 					<div className={'bott'}>
-						<p>$15000</p>
+						<p>${formatterStr(model.modelPrice)}</p>
 						<Box className={'more-details'}>
-							<Link href={'/model/detail'}>
+							<Link href={`/model/detail?id=${model._id}`}>
 								<span>View Details</span>
 							</Link>
 							<img src="/img/icons/rightup.svg" alt="" />

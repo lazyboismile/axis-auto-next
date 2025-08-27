@@ -1,7 +1,12 @@
+import { useMutation, useQuery } from '@apollo/client';
 import { Pagination, Stack, Typography } from '@mui/material';
 import { NextPage } from 'next';
 import React, { useState } from 'react';
+import { LIKE_TARGET_MODEL } from '../../../apollo/user/mutation';
+import { GET_FAVORITES } from '../../../apollo/user/query';
+import { Message } from '../../enums/common.enum';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
+import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../sweetAlert';
 import { T } from '../../types/common';
 import { Model } from '../../types/model/model';
 import ModelCard from '../model/ModelCard';
@@ -14,10 +19,47 @@ const MyFavorites: NextPage = () => {
 
 	/** APOLLO REQUESTS **/
 
+	const [likeTargetModel] = useMutation(LIKE_TARGET_MODEL);
+	
+	const {
+		loading: getFavoritesLoading,
+		data: getFavoritesData,
+		error: getFavoritesError,
+		refetch: getFavoritesRefetch,
+	} = useQuery(GET_FAVORITES, {
+		fetchPolicy: 'network-only',
+		variables: { input: searchFavorites },
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setMyFavorites(data?.getFavorites?.list);
+			setTotal(data?.getFavorites?.metaCounter[0]?.total ?? 0);
+		}
+	});
+
 	/** HANDLERS **/
 	const paginationHandler = (e: T, value: number) => {
 		setSearchFavorites({ ...searchFavorites, page: value });
 	};
+
+	const likeModelHandler = async (user: T, id: string) => {
+		try {
+			if(!id) return;
+			if(!user._id) throw new Error(Message.NOT_AUTHENTICATED);
+
+			// execute likeTargetModel Mutuation
+			await  likeTargetModel({
+				variables: {input: id},
+			});
+
+			// execute getFavoritesRefetch
+			await getFavoritesRefetch({ input: searchFavorites });
+
+			await sweetTopSmallSuccessAlert('success', 800);
+		} catch (err: any) {
+			console.log("ERROR, likeModelHandler: ", err.message);
+			sweetMixinErrorAlert(err.message).then();
+		}
+	}
 
 	if (device === 'mobile') {
 		return <div>AxisAuto MY FAVORITES MOBILE</div>;
@@ -33,7 +75,7 @@ const MyFavorites: NextPage = () => {
 				<Stack className="favorites-list-box">
 					{myFavorites?.length ? (
 						myFavorites?.map((model: Model) => {
-							return <ModelCard model={model} myFavorites={true} />;
+							return <ModelCard model={model} likeModelHandler={likeModelHandler} myFavorites={true} />;
 						})
 					) : (
 						<div className={'no-data'}>
@@ -49,7 +91,18 @@ const MyFavorites: NextPage = () => {
 								count={Math.ceil(total / searchFavorites.limit)}
 								page={searchFavorites.page}
 								shape="circular"
-								color="primary"
+								sx={{
+									'& .MuiPaginationItem-root': {
+									color: '#405FF2', // text color for numbers
+									},
+									'& .MuiPaginationItem-root.Mui-selected': {
+									backgroundColor: '#405FF2', // selected button background
+									color: '#fff',              // selected button text
+									},
+									'& .MuiPaginationItem-root.Mui-selected:hover': {
+									backgroundColor: '#3249c7', // darker on hover
+									},
+								}}
 								onChange={paginationHandler}
 							/>
 						</Stack>

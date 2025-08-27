@@ -104,17 +104,18 @@
 						border-radius: 16px;
 						padding: 16px;
 						.buttons {
-							width: auto;
+							width: 280px;
 							height: auto;
 							flex-direction: row;
+							justify-content: center;
 							align-items: center;
 							gap: 11px;
 							margin: 0 10px 27px 0;
 							p {
 								color: #181a20;
-								text-align: right;
 								font-family: $font-dm;
 								font-size: 18px;
+								text-align: center;
 								font-style: normal;
 								font-weight: 400;
 								line-height: normal;
@@ -128,7 +129,9 @@
 							}
 						}
 						.price {
+							width: 100%;
 							font-family: $font-dm;
+							text-align: center;
 							color: #181a20;
 						}
 						img {
@@ -618,7 +621,8 @@
 							img {
 								width: 95px;
 								height: 95px;
-								border-radius: 50%;
+								border-top-left-radius: 10px;
+								border-bottom-right-radius: 10px;
 								object-fit: cover;
 							}
 							.name-phone-listings {
@@ -636,6 +640,10 @@
 									flex-direction: row;
 									align-items: center;
 									gap: 10px;
+									img {
+										width: 16px;
+										height: 16px;
+									}
 									.number {
 										color: #181a20;
 										font-family: $font;
@@ -643,6 +651,10 @@
 										font-style: normal;
 										font-weight: 400;
 										line-height: 28px;
+
+										white-space: normal;
+										word-break: break-word;  
+										overflow-wrap: anywhere; 
 									}
 								}
 								.listings {

@@ -42,7 +42,7 @@ const MyMenu = () => {
 					<Stack className={'user-info'}>
 						<Typography className={'user-name'}>{user?.memberNick}</Typography>
 						<Box component={'div'} className={'user-phone'}>
-							<img src={'/img/icons/call.svg'} alt={'icon'} />
+							<img src={'/img/icons/chat.svg'} alt={'icon'} />
 							<Typography className={'p-number'}>{user?.memberEmail}</Typography>
 						</Box>
 						{user?.memberType === 'ADMIN' ? (

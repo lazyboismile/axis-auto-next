@@ -6,7 +6,7 @@ const thisYear = new Date().getFullYear();
 
 export const modelYears: number[] = [];
 
-for (let i = 1900; i <= thisYear; i++) {
+for (let i = 1970; i <= thisYear; i++) {
     modelYears.push(i);
 }
 

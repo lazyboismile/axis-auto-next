@@ -1,24 +1,30 @@
 import { useReactiveVar } from '@apollo/client';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Link from 'next/link';
 import React from 'react';
 import { userVar } from '../../../apollo/store';
+import { REACT_APP_API_URL } from '../../config';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
+import { Model } from '../../types/model/model';
+import { formatterStr } from '../../utils';
 
-// interface ModelCardType {
-// 	model: Model;
-// 	likeModelHandler?: any;
-// 	myFavorites?: boolean;
-// 	recentlyVisited?: boolean;
-// }
+interface ModelCardType {
+	model: Model;
+	likeModelHandler?: any;
+	myFavorites?: boolean;
+	recentlyVisited?: boolean;
+}
 
-const ModelCard = () => { //props: ModelCardType
-	// const { model, likeModelHandler, myFavorites, recentlyVisited } = props;
+const ModelCard = (props: ModelCardType) => { 
+	const { model, likeModelHandler, myFavorites, recentlyVisited } = props;
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
-	const imagePath: string = '/img/banner/header1.svg';
+	const imagePath: string = model?.modelImages[0]
+		? `${REACT_APP_API_URL}/${model?.modelImages[0]}`
+		: '/img/banner/header1.svg';
 
 	if (device === 'mobile') {
 		return <div>Model CARD</div>;
@@ -29,17 +35,17 @@ const ModelCard = () => { //props: ModelCardType
 					<Link
 						href={{
 							pathname: '/model/detail',
-							query: { id: '/model/detail'},
+							query: { id: model?._id},
 						}}
 					>
 						<img src={imagePath} alt="" />
 					</Link>
-					
+					{!recentlyVisited && (
 						<Box component={'div'} className={'top-badge'}>
 							<img src="/img/icons/camera-svgrepo-com.svg" alt="" />
-							<span className="view-cnt">120</span>
+							<span className="view-cnt">{model.modelViews}</span>
 						</Box>
-					
+					)}
 				</Stack>
 				<Stack className="bottom">
 					<Stack className="name-address">
@@ -47,20 +53,26 @@ const ModelCard = () => { //props: ModelCardType
 							<Link
 								href={{
 									pathname: '/model/detail',
-									query: { id: '/model/detail'},
+									query: { id: model?._id },
 								}}
 							>
-								<Typography>Title</Typography>
+								<p>{model.modelTitle}</p>
 							</Link>
-							<IconButton color={'default'}>
-								{/* <FavoriteIcon color="primary" /> */}
-								<FavoriteBorderIcon />
-							<span className="view-cnt">77</span>
-							</IconButton>
+							{!recentlyVisited && (
+							<IconButton color={'default'} onClick={() => likeModelHandler(user, model?._id)}>
+									{myFavorites ? (
+										<FavoriteIcon color="primary" />
+									) : model?.meLiked && model?.meLiked[0]?.myFavorite ? (
+										<FavoriteIcon color="primary" />
+									) : (
+										<FavoriteBorderIcon />
+									)}
+								</IconButton>
+							)}
 						</Stack>
 						<Stack className="address">
 							<Typography>
-								address, location
+								{model.modelAddress}, {model.modelLocation}
 							</Typography>
 						</Stack>
 					</Stack>
@@ -68,26 +80,26 @@ const ModelCard = () => { //props: ModelCardType
 					<div className={'options'}>
 						<div>
 							<img src="/img/icons/miles.svg" alt="" />
-							<span>15 miles</span>
+							<span>{formatterStr(model.modelOdometer ?? 0)} {model.modelOdoUnit === 'KILOMETERS' ? 'km' : 'mi'}</span>
 						</div>
 						<div>
 							<img src="/img/icons/fuelType.svg" alt="" />
-							<span>Petrol</span>
+							<span>{model.modelFuelType}</span>
 						</div>
 						<div>
 							<img src="/img/icons/CVT.svg" alt="" />
-							<span>Automatice</span>
+							<span>{model.modelTransmission}</span>
 						</div>
 						<div>
 							<img src="/img/icons/calendar.svg" alt="" />
-							<span>2023</span>
+							<span>{model.modelYear}</span>
 						</div>
 					</div>
 					<Divider sx={{ mb: '10px', background: '#585353' }} />
 					<div className={'bott'}>
-						<p>$15000</p>
+						<p>${formatterStr(model.modelPrice)}</p>
 						<Box className={'more-details'}>
-							<Link href={'/model/detail'}>
+							 <Link href={`/model/detail?id=${model._id}`}>
 								<span>View Details</span>
 							</Link>
 							<img src="/img/icons/rightup.svg" alt="" />

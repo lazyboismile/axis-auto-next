@@ -3,7 +3,7 @@ import { ModelBodyType, ModelBrand, ModelColour, ModelCurrency, ModelFuelType, M
 export interface ModelUpdate {
     _id: string;
     modelBrand?: ModelBrand;
-    modelBodyType?: ModelBodyType;
+    modelType?: ModelBodyType;
     modelStatus?: ModelStatus;
     modelLocation?: ModelLocation;
     modelAddress?: string;

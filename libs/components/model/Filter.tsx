@@ -38,37 +38,81 @@ const Filter = (props: FilterType) => {
 
 	/** LIFECYCLES **/
 	useEffect(() => {
-		const queryParams = JSON.stringify({
-			...searchFilter,
-			search: {
-				...searchFilter.search,
-			},
-		});
 
 		if (searchFilter?.search?.brandList?.length == 0) {
 			delete searchFilter.search.brandList;
 			setShowMoreBrand(false);
-			router.push(`/model?input=${queryParams}`, `/model?input=${queryParams}`, { scroll: false }).then();
+			router.push(`/model?input=${JSON.stringify({
+			...searchFilter,
+			search: {
+				...searchFilter.search,
+			},
+		})}`, `/model?input=${JSON.stringify({
+			...searchFilter,
+			search: {
+				...searchFilter.search,
+			},
+		})}`, { scroll: false }).then();
 		}
 
 		if (searchFilter?.search?.typeList?.length == 0) {
 			delete searchFilter.search.typeList;
-			router.push(`/model?input=${queryParams}`, `/model?input=${queryParams}`, { scroll: false }).then();
+			router.push(`/model?input=${JSON.stringify({
+			...searchFilter,
+			search: {
+				...searchFilter.search,
+			},
+		})}`, `/model?input=${JSON.stringify({
+			...searchFilter,
+			search: {
+				...searchFilter.search,
+			},
+		})}`, { scroll: false }).then();
 		}
 
 		if (searchFilter?.search?.locationList?.length == 0) {
 			delete searchFilter.search.locationList;
-			router.push(`/model?input=${queryParams}`, `/model?input=${queryParams}`, { scroll: false }).then();
+			router.push(`/model?input=${JSON.stringify({
+			...searchFilter,
+			search: {
+				...searchFilter.search,
+			},
+		})}`, `/model?input=${JSON.stringify({
+			...searchFilter,
+			search: {
+				...searchFilter.search,
+			},
+		})}`, { scroll: false }).then();
 		}
 
 		if (searchFilter?.search?.options?.length == 0) {
 			delete searchFilter.search.options;
-			router.push(`/model?input=${queryParams}`, `/model?input=${queryParams}`, { scroll: false }).then();
+			router.push(`/model?input=${JSON.stringify({
+			...searchFilter,
+			search: {
+				...searchFilter.search,
+			},
+		})}`, `/model?input=${JSON.stringify({
+			...searchFilter,
+			search: {
+				...searchFilter.search,
+			},
+		})}`, { scroll: false }).then();
 		}
 
 		if (searchFilter?.search?.colourList?.length == 0) {
 			delete searchFilter.search.colourList;
-			router.push(`/model?input=${queryParams}`, `/model?input=${queryParams}`, { scroll: false }).then();
+			router.push(`/model?input=${JSON.stringify({
+			...searchFilter,
+			search: {
+				...searchFilter.search,
+			},
+		})}`, `/model?input=${JSON.stringify({
+			...searchFilter,
+			search: {
+				...searchFilter.search,
+			},
+		})}`, { scroll: false }).then();
 		}
 
 		if (searchFilter?.search?.locationList) setShowMoreLocation(true);
@@ -549,7 +593,7 @@ const Filter = (props: FilterType) => {
 							<Select
 								labelId="demo-simple-select-label"
 								id="demo-simple-select"
-								value={searchFilter?.search?.periodsRange?.start ?? 1900}
+								value={searchFilter?.search?.periodsRange?.start ?? 1970}
 								label="Start"
 								onChange={(e: any) => modelPeriodHandler(e, 'start')}
 								MenuProps={MenuProps}

@@ -1,9 +1,12 @@
+import { useQuery } from '@apollo/client';
 import { Box, Button, List, ListItem, Stack, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
+import { GET_MEMBER } from '../../../apollo/user/query';
 import { REACT_APP_API_URL } from '../../config';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
+import { T } from '../../types/common';
 import { Member } from '../../types/member/member';
 
 interface MemberMenuProps {
@@ -21,6 +24,21 @@ const MemberMenu = (props: MemberMenuProps) => {
 
 	/** APOLLO REQUESTS **/
 
+	const {
+		loading: getMemberLoading,
+		data: getMemberData,
+		error: getMemberError,
+		refetch: getMemberRefetch,
+	} = useQuery(GET_MEMBER, {
+		fetchPolicy: 'network-only',
+		variables: {input: memberId },
+		skip: !memberId,
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setMember(data?.getMember);
+		},
+	});
+
 	if (device === 'mobile') {
 		return <div>MEMBER MENU MOBILE</div>;
 	} else {
@@ -36,7 +54,7 @@ const MemberMenu = (props: MemberMenuProps) => {
 					<Stack className={'user-info'}>
 						<Typography className={'user-name'}>{member?.memberNick}</Typography>
 						<Box component={'div'} className={'user-email'}>
-							<img src={'/img/icons/call.svg'} alt={'icon'} />
+							<img src={'/img/icons/chat.svg'} alt={'icon'} />
 							<Typography className={'email'}>{member?.memberEmail}</Typography>
 						</Box>
 						<Typography className={'view-list'}>{member?.memberType}</Typography>
@@ -48,7 +66,7 @@ const MemberMenu = (props: MemberMenuProps) => {
 							<Button
 								variant="outlined"
 								sx={{ background: '#b9b9b9' }}
-								onClick={() => unsubscribeHandler(member?._id, null, memberId)}
+								onClick={() => unsubscribeHandler(member?._id, getMemberRefetch, memberId)}
 							>
 								Unfollow
 							</Button>
@@ -58,7 +76,7 @@ const MemberMenu = (props: MemberMenuProps) => {
 						<Button
 							variant="contained"
 							sx={{ background: '#ff5d18', ':hover': { background: '#ff5d18' } }}
-							onClick={() => subscribeHandler(member?._id, null, memberId)}
+							onClick={() => subscribeHandler(member?._id, getMemberRefetch, memberId)}
 						>
 							Follow
 						</Button>
@@ -87,7 +105,7 @@ const MemberMenu = (props: MemberMenuProps) => {
 												<img className={'com-icon'} src={'/img/icons/carType.svg'} alt={'com-icon'} />
 											)}
 											<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
-												Properties
+												Models
 											</Typography>
 											<Typography className="count-title" variant="subtitle1">
 												{member?.memberModels}
@@ -216,12 +234,11 @@ const MemberMenu = (props: MemberMenuProps) => {
 										style={{ width: '100%' }}
 									>
 										<div className={'flex-box'}>
-											{category === 'articles' ? (
-												<img className={'com-icon'} src={'/img/icons/discoveryWhite.svg'} alt={'com-icon'} />
-											) : (
-												<img className={'com-icon'} src={'/img/icons/discovery.svg'} alt={'com-icon'} />
-											)}
-
+											<img
+												className="com-icon"
+												src={`/img/icons/${category === 'articles' ? 'discoveryWhite' : 'discovery'}.svg`}
+												alt="articles icon"
+											/>
 											<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
 												Articles
 											</Typography>

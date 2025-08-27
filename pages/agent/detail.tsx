@@ -1,4 +1,4 @@
-import { useReactiveVar } from '@apollo/client';
+import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import StarIcon from '@mui/icons-material/Star';
 import { Box, Button, Pagination, Stack, Typography } from '@mui/material';
 import { NextPage } from 'next';
@@ -6,15 +6,19 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { userVar } from '../../apollo/store';
+import { CREATE_COMMENT, LIKE_TARGET_MODEL } from '../../apollo/user/mutation';
+import { GET_COMMENTS, GET_MEMBER, GET_MODELS } from '../../apollo/user/query';
 import ReviewCard from '../../libs/components/agent/ReviewCard';
-import ModelBigCard from '../../libs/components/common/ModelBIgCard';
+import ModelBigCard from '../../libs/components/common/ModelBigCard';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { REACT_APP_API_URL } from '../../libs/config';
 import { CommentGroup } from '../../libs/enums/comment.enum';
+import { Message } from '../../libs/enums/common.enum';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
-import { sweetErrorHandling } from '../../libs/sweetAlert';
+import { sweetErrorHandling, sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
 import { Comment } from '../../libs/types/comment/comment';
 import { CommentInput, CommentsInquiry } from '../../libs/types/comment/comment.input';
+import { T } from '../../libs/types/common';
 import { Member } from '../../libs/types/member/member';
 import { Model } from '../../libs/types/model/model';
 import { ModelsInquiry } from '../../libs/types/model/model.input';
@@ -32,9 +36,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 	const [mbId, setMbId] = useState<string | null>(null);
 	const [agent, setAgent] = useState<Member | null>(null);
 	const [searchFilter, setSearchFilter] = useState<ModelsInquiry>(initialInput);
-	const [agentModels, setAgentModels] = useState<Model[]>(
-        initialInput.length ? initialInput : [1, 2, 3, 4, 5, 6, 7]
-    );
+	const [agentModels, setAgentModels] = useState<Model[]>([]);
 	const [modelTotal, setModelTotal] = useState<number>(0);
 	const [commentInquiry, setCommentInquiry] = useState<CommentsInquiry>(initialComment);
 	const [agentComments, setAgentComments] = useState<Comment[]>([]);
@@ -46,13 +48,86 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 	});
 
 	/** APOLLO REQUESTS **/
+	const [createComment] = useMutation(CREATE_COMMENT);
+	const [likeTargetModel] =useMutation(LIKE_TARGET_MODEL);
+
+	const {
+		loading: getMemberLoading,
+		data: getMemberData,
+		error: getMemberError,
+		refetch: getMemberRefetch,
+	} = useQuery(GET_MEMBER, {
+		fetchPolicy: "network-only",
+		variables: { input: mbId },
+		skip: !mbId,
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			if(data?.getMember) setAgent(data?.getMember);
+			setSearchFilter({ 
+				...searchFilter, 
+				search: { 
+					memberId: data?.getMember?._id 
+				} });
+			setCommentInquiry({ 
+				...commentInquiry, 
+				search: { 
+					commentRefId: data?.getMember?._id 
+				} });
+				setInsertCommentData({
+					...insertCommentData,
+					commentRefId: data?.getMember?._id,
+				});
+		}
+	});
+
+	const {
+		loading: getModelsLoading,
+		data: getModelsData,
+		error: getModelsError,
+		refetch: getModelsRefetch,
+	} = useQuery(GET_MODELS, {
+		fetchPolicy: "network-only",
+		variables: { input: searchFilter },
+		skip: !searchFilter.search.memberId,
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setAgentModels(data?.getModels?.list);
+			setModelTotal(data?.getModels?.metaCounter[0]?.total ?? 0);
+		}
+	});
+
+	const {
+		loading: getCommentsLoading,
+		data: getCommentsData,
+		error: getCommentsError,
+		refetch: getCommentsRefetch,
+	} = useQuery(GET_COMMENTS, {
+		fetchPolicy: "network-only",
+		variables: { input: commentInquiry },
+		skip: !commentInquiry.search.commentRefId,
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setAgentComments(data?.getComments?.list);
+			setCommentTotal(data?.getComments?.metaCounter[0]?.total ?? 0);
+		}
+	});
+	
 	/** LIFECYCLES **/
 	useEffect(() => {
 		if (router.query.agentId) setMbId(router.query.agentId as string);
 	}, [router]);
 
-	useEffect(() => {}, [searchFilter]);
-	useEffect(() => {}, [commentInquiry]);
+	useEffect(() => {
+		if(searchFilter.search.memberId) {
+			getModelsRefetch({ variables: { input: searchFilter } }).then();
+		}
+	}, [searchFilter]);
+
+	useEffect(() => {
+		if(commentInquiry.search.commentRefId) {
+			getCommentsRefetch({ variables: { input: commentInquiry } }).then();
+		}
+	}, [commentInquiry]);
 
 	/** HANDLERS **/
 	const redirectToMemberPageHandler = async (memberId: string) => {
@@ -76,10 +151,42 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 
 	const createCommentHandler = async () => {
 		try {
+			if(!user?._id) throw new Error(Message.NOT_AUTHENTICATED);
+			if(user._id === mbId) throw new Error('You cannot review yourself');
+			await createComment({
+				variables: { input: insertCommentData },
+			})
+			setInsertCommentData({
+				...insertCommentData,
+				commentContent: '',
+			});
+
+			await getCommentsRefetch({ variables: { input: commentInquiry } }).then();
+			await sweetTopSmallSuccessAlert('success', 800);
 		} catch (err: any) {
 			sweetErrorHandling(err).then();
 		}
 	};
+
+	const likeModelHandler = async (user: T, id: string) => {
+		try {
+			if(!id) return;
+			if(!user._id) throw new Error(Message.NOT_AUTHENTICATED);
+
+			// execute likeTargetModel Mutuation
+			await  likeTargetModel({
+				variables: {input: id},
+			});
+
+			// execute getModelsRefetch
+			await getModelsRefetch({ input: searchFilter });
+
+			await sweetTopSmallSuccessAlert('success', 800);
+		} catch (err: any) {
+			console.log("ERROR, likeModelHandler: ", err.message);
+			sweetMixinErrorAlert(err.message).then();
+		}
+	}
 
 	if (device === 'mobile') {
 		return <div>AGENT DETAIL PAGE MOBILE</div>;
@@ -93,10 +200,10 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 							alt=""
 						/>
 						<Box component={'div'} className={'info'} onClick={() => redirectToMemberPageHandler(agent?._id as string)}>
-							<strong>{agent?.memberFullName ?? agent?.memberNick} Tony</strong>
+							<strong>{agent?.memberFullName ?? agent?.memberNick}</strong>
 							<div>
-								<img src="/img/icons/call.svg" alt="" />
-								<span>{agent?.memberEmail} dfdbvfjhb@gmail.com</span>
+								<img src="/img/icons/chat.svg" alt="" />
+								<span>{agent?.memberEmail}</span>
 							</div>
 						</Box>
 					</Stack>
@@ -105,7 +212,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 							{agentModels.map((model: Model) => {
 								return (
 									<div className={'wrap-main'} key={model?._id}>
-										<ModelBigCard model={model} key={model?._id} />
+										<ModelBigCard model={model} likeModelHandler={likeModelHandler} key={model?._id} />
 									</div>
 								);
 							})}
@@ -119,7 +226,18 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 											count={Math.ceil(modelTotal / searchFilter.limit) || 1}
 											onChange={modelPaginationChangeHandler}
 											shape="circular"
-											color="primary"
+											sx={{
+												'& .MuiPaginationItem-root': {
+												color: '#405FF2',
+												},
+												'& .MuiPaginationItem-root.Mui-selected': {
+												backgroundColor: '#405FF2', 
+												color: '#fff',            
+												},
+												'& .MuiPaginationItem-root.Mui-selected:hover': {
+												backgroundColor: '#3249c7',
+												},
+											}}
 										/>
 									</Stack>
 									<span>
@@ -156,7 +274,18 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 										count={Math.ceil(commentTotal / commentInquiry.limit) || 1}
 										onChange={commentPaginationChangeHandler}
 										shape="circular"
-										color="primary"
+										sx={{
+											'& .MuiPaginationItem-root': {
+											color: '#405FF2', 
+											},
+											'& .MuiPaginationItem-root.Mui-selected': {
+											backgroundColor: '#405FF2', 
+											color: '#fff',              
+											},
+											'& .MuiPaginationItem-root.Mui-selected:hover': {
+											backgroundColor: '#3249c7', 
+											},
+										}}
 									/>
 								</Box>
 							</Stack>

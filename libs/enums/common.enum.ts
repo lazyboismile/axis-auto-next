@@ -15,6 +15,7 @@ export enum Message {
     ONLY_SPECIFIC_ROLES_ALLOWED = 'Allowed only for members with specific roles!',
     NOT_ALLOWED_REQUEST = 'Not Allowed Request!',
     INSERT_ALL_INPUTS = 'Please provide all inputs',
+    INSERT_ALL_INPUTS_AND_IMAGE = 'Please provide all inputs and image',
 }
 
 export enum Direction {

@@ -1,12 +1,18 @@
+import { useMutation, useQuery } from '@apollo/client';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import { Box, Button, Menu, MenuItem, Pagination, Stack } from '@mui/material';
 import { NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
+import { LIKE_TARGET_MEMBER } from '../../apollo/user/mutation';
+import { GET_AGENTS } from '../../apollo/user/query';
 import AgentCard from '../../libs/components/common/AgentCard';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
+import { Message } from '../../libs/enums/common.enum';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
+import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
+import { T } from '../../libs/types/common';
 import { Member } from '../../libs/types/member/member';
 
 export const getStaticProps = async ({ locale }: any) => ({
@@ -25,14 +31,28 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 	const [searchFilter, setSearchFilter] = useState<any>(
 		router?.query?.input ? JSON.parse(router?.query?.input as string) : initialInput,
 	);
-	const [agents, setAgents] = useState<Member[]>(
-		initialInput.length ? initialInput : [1, 2, 3, 4, 5, 6, 7]
-	);
+	const [agents, setAgents] = useState<Member[]>([]);
 	const [total, setTotal] = useState<number>(0);
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [searchText, setSearchText] = useState<string>('');
 
 	/** APOLLO REQUESTS **/
+	const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER)
+	
+	const {
+		loading: getAgentsLoading,
+		data: getAgentsData,
+		error: getAgentsError,
+		refetch: getAgentsRefetch,
+	} = useQuery(GET_AGENTS, {
+		fetchPolicy: "network-only",
+		variables: { input: searchFilter },
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setAgents(data?.getAgents?.list);
+			setTotal(data?.getAgents?.metaCounter[0]?.total)
+		}
+	});
 	/** LIFECYCLES **/
 	useEffect(() => {
 		if (router.query.input) {
@@ -45,6 +65,26 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 	}, [router]);
 
 	/** HANDLERS **/
+	const likeMemberHandler = async (user: T, id: string) => {
+		try {
+			if(!id) return;
+			if(!user._id) throw new Error(Message.NOT_AUTHENTICATED);
+
+			// execute likeTargetMember Mutuation
+			await likeTargetMember({
+				variables: { input: id },
+			});
+
+			// execute getAgentsRefetch
+			await getAgentsRefetch({ input: searchFilter });
+
+			await sweetTopSmallSuccessAlert('success', 800);
+		} catch (err: any) {
+			console.log("ERROR, likeMemberHandler: ", err.message);
+			sweetMixinErrorAlert(err.message).then();
+		}
+	}
+
 	const sortingClickHandler = (e: MouseEvent<HTMLElement>) => {
 		setAnchorEl(e.currentTarget);
 		setSortingOpen(true);
@@ -72,6 +112,10 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 			case 'views':
 				setSearchFilter({ ...searchFilter, sort: 'memberViews', direction: 'DESC' });
 				setFilterSortName('Views');
+				break;
+			case 'sales':
+				setSearchFilter({ ...searchFilter, sort: 'memberSales', direction: 'DESC' });
+				setFilterSortName('Sales');
 				break;
 		}
 		setSortingOpen(false);
@@ -128,6 +172,9 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 									<MenuItem onClick={sortingHandler} id={'views'} disableRipple>
 										Views
 									</MenuItem>
+									<MenuItem onClick={sortingHandler} id={'sales'} disableRipple>
+										Sales
+									</MenuItem>
 								</Menu>
 							</div>
 						</Box>
@@ -140,7 +187,7 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 							</div>
 						) : (
 							agents.map((agent: Member) => {
-								return <AgentCard agent={agent} key={agent._id} />;
+								return <AgentCard agent={agent} likeMemberHandler={likeMemberHandler} key={agent._id} />;
 							})
 						)}
 					</Stack>

@@ -1,13 +1,18 @@
+import { useMutation, useQuery } from '@apollo/client';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Button, Pagination, Stack, Tab, Typography } from '@mui/material';
 import { NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
+import { LIKE_TARGET_BOARD_ARTICLE } from '../../apollo/user/mutation';
+import { GET_BOARD_ARTICLES } from '../../apollo/user/query';
 import CommunityCard from '../../libs/components/common/CommunityCard';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { BoardArticleCategory } from '../../libs/enums/board-article.enum';
+import { Message } from '../../libs/enums/common.enum';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
+import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
 import { BoardArticle } from '../../libs/types/board-article/board-article';
 import { BoardArticlesInquiry } from '../../libs/types/board-article/board-article.input';
 import { T } from '../../libs/types/common';
@@ -29,6 +34,22 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 	if (articleCategory) initialInput.search.articleCategory = articleCategory;
 
 	/** APOLLO REQUESTS **/
+	const [likeTargetBoardArticle] = useMutation(LIKE_TARGET_BOARD_ARTICLE);
+
+	const {
+		loading: getArticlesLoading,
+		data: getArticlesData,
+		error: getArticlesError,
+		refetch: getArticlesRefetch,
+	} = useQuery(GET_BOARD_ARTICLES, {
+		fetchPolicy: "cache-and-network",
+		variables: { input: searchCommunity },
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setBoardArticles(data?.getBoardArticles?.list);
+			setTotalCount(data?.getBoardArticles?.metaCounter[0]?.total)
+		}
+	});
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -36,7 +57,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 			router.push(
 				{
 					pathname: router.pathname,
-					query: { articleCategory: 'FREE' },
+					query: { articleCategory: initialInput.search.articleCategory },
 				},
 				router.pathname,
 				{ shallow: true },
@@ -61,6 +82,27 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 	const paginationHandler = (e: T, value: number) => {
 		setSearchCommunity({ ...searchCommunity, page: value });
 	};
+
+	const likeArticleHandler = async (e: any, user: any, id: string) => {
+		try {
+			e.stopPropagation();
+			if(!id) return;
+			if(!user._id) throw new Error(Message.NOT_AUTHENTICATED);
+
+			// execute likeTargetBoardArticle Mutuation
+			await  likeTargetBoardArticle({
+				variables: {input: id},
+			});
+
+			// execute getArticlesRefetch
+			await getArticlesRefetch({ input: searchCommunity });
+
+			await sweetTopSmallSuccessAlert('success', 800);
+		} catch (err: any) {
+			console.log("ERROR, likeArticleHandler: ", err.message);
+			sweetMixinErrorAlert(err.message).then();
+		}
+	}
 
 	if (device === 'mobile') {
 		return <h1>COMMUNITY PAGE MOBILE</h1>;
@@ -134,9 +176,9 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 
 									<TabPanel value="FREE">
 										<Stack className="list-box">
-											{totalCount ? (
+											{searchCommunity.search.articleCategory === 'FREE' && totalCount ? (
 												boardArticles?.map((boardArticle: BoardArticle) => {
-													return <CommunityCard boardArticle={boardArticle} key={boardArticle?._id} />;
+													return <CommunityCard boardArticle={boardArticle} likeArticleHandler={likeArticleHandler} key={boardArticle?._id} />;
 												})
 											) : (
 												<Stack className={'no-data'}>
@@ -148,9 +190,9 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 									</TabPanel>
 									<TabPanel value="RECOMMEND">
 										<Stack className="list-box">
-											{totalCount ? (
+											{searchCommunity.search.articleCategory === 'RECOMMEND' && totalCount ? (
 												boardArticles?.map((boardArticle: BoardArticle) => {
-													return <CommunityCard boardArticle={boardArticle} key={boardArticle?._id} />;
+													return <CommunityCard boardArticle={boardArticle} likeArticleHandler={likeArticleHandler} key={boardArticle?._id} />;
 												})
 											) : (
 												<Stack className={'no-data'}>
@@ -162,9 +204,9 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 									</TabPanel>
 									<TabPanel value="NEWS">
 										<Stack className="list-box">
-											{totalCount ? (
+											{searchCommunity.search.articleCategory === 'NEWS' && totalCount ? (
 												boardArticles?.map((boardArticle: BoardArticle) => {
-													return <CommunityCard boardArticle={boardArticle} key={boardArticle?._id} />;
+													return <CommunityCard boardArticle={boardArticle} likeArticleHandler={likeArticleHandler} key={boardArticle?._id} />;
 												})
 											) : (
 												<Stack className={'no-data'}>
@@ -176,9 +218,9 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 									</TabPanel>
 									<TabPanel value="HUMOR">
 										<Stack className="list-box">
-											{totalCount ? (
+											{searchCommunity.search.articleCategory === 'HUMOR' && totalCount ? (
 												boardArticles?.map((boardArticle: BoardArticle) => {
-													return <CommunityCard boardArticle={boardArticle} key={boardArticle?._id} />;
+													return <CommunityCard boardArticle={boardArticle} likeArticleHandler={likeArticleHandler} key={boardArticle?._id} />;
 												})
 											) : (
 												<Stack className={'no-data'}>
@@ -200,7 +242,18 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 									count={Math.ceil(totalCount / searchCommunity.limit)}
 									page={searchCommunity.page}
 									shape="circular"
-									color="primary"
+									 sx={{
+										'& .MuiPaginationItem-root': {
+										color: '#405FF2', // text color for numbers
+										},
+										'& .MuiPaginationItem-root.Mui-selected': {
+										backgroundColor: '#405FF2', // selected button background
+										color: '#fff',              // selected button text
+										},
+										'& .MuiPaginationItem-root.Mui-selected:hover': {
+										backgroundColor: '#3249c7', // darker on hover
+										},
+									}}
 									onChange={paginationHandler}
 								/>
 							</Stack>

@@ -1,7 +1,9 @@
+import { useQuery } from '@apollo/client';
 import { Pagination, Stack, Typography } from '@mui/material';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
+import { GET_MODELS } from '../../../apollo/user/query';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { T } from '../../types/common';
 import { Model } from '../../types/model/model';
@@ -18,8 +20,26 @@ const MyModels: NextPage = ({ initialInput, ...props }: any) => {
 
 	/** APOLLO REQUESTS **/
 
+	const {
+		loading: getModelsLoading,
+		data: getModelsData,
+		error: getModelsError,
+		refetch: getModelsRefetch,
+	} = useQuery(GET_MODELS, {
+		fetchPolicy: 'network-only',
+		variables: {input: searchFilter},
+		skip: !searchFilter?.search?.memberId,
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setAgentModels(data?.getModels?.list);
+			setTotal(data?.getModels?.metaCounter[0]?.total ?? 0);
+		},
+	});
+
 	/** LIFECYCLES **/
-	useEffect(() => {}, [searchFilter]);
+	useEffect(() => {
+		getModelsRefetch().then();
+	}, [searchFilter]);
 
 	useEffect(() => {
 		if (memberId)
@@ -41,7 +61,7 @@ const MyModels: NextPage = ({ initialInput, ...props }: any) => {
 						<Typography className="main-title">Models</Typography>
 					</Stack>
 				</Stack>
-				<Stack className="properties-list-box">
+				<Stack className="models-list-box">
 					<Stack className="list-box">
 						{agentModels?.length > 0 && (
 							<Stack className="listing-title-box">
@@ -68,7 +88,18 @@ const MyModels: NextPage = ({ initialInput, ...props }: any) => {
 										count={Math.ceil(total / searchFilter.limit)}
 										page={searchFilter.page}
 										shape="circular"
-										color="primary"
+										sx={{
+											'& .MuiPaginationItem-root': {
+												color: '#405FF2',
+											},
+											'& .MuiPaginationItem-root.Mui-selected': {
+												backgroundColor: '#405FF2',
+												color: '#fff',
+											},
+											'& .MuiPaginationItem-root.Mui-selected:hover': {
+												backgroundColor: '#3249c7',
+											},
+										}}
 										onChange={paginationHandler}
 									/>
 								</Stack>

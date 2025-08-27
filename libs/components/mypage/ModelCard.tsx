@@ -56,8 +56,7 @@ export const ModelCard = (props: ModelCardProps) => {
 		return (
 			<Stack className="model-card-box">
 				<Stack className="image-box" onClick={() => pushModelDetail(model?._id)}>
-					<img src={'/img/banner/header1.svg'} alt="" />
-                    {/* /** `${process.env.REACT_APP_API_URL}/${model.modelImages[0]}` */ }
+                    <img src={`${process.env.REACT_APP_API_URL}/${model.modelImages[0]}`} alt="" />
 				</Stack>
 				<Stack className="information-box" onClick={() => pushModelDetail(model?._id)}>
 					<Typography className="name">{model.modelTitle ?? 'N/A'}</Typography>

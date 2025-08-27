@@ -55,17 +55,23 @@
 									font-weight: 600;
 									line-height: normal;
 								}
-								.user-phone {
+								.user-email {
 									display: flex;
 									flex-direction: row;
-									margin-top: 5px;
+									align-items: flex-start; // aligns icon with first text line
+									flex-wrap: wrap; // allows wrapping
+									word-break: break-word; // breaks long text
+									white-space: normal; // ensures wrapping happens
+
 									img {
-										margin-top: 3px;
+										margin-top: 7px;
 										margin-right: 4px;
 										width: 16px;
 										height: 16px;
+										flex-shrink: 0; // prevent icon from shrinking
 									}
 								}
+
 								.view-list {
 									margin-top: 5px;
 									font-weight: 300;

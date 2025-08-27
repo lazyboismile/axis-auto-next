@@ -57,7 +57,7 @@ const withLayoutBasic = (Component: any) => {
 				case '/community/detail':
 					title = 'Community Detail';
 					desc = 'Buy / For Rent';
-					bgImage = '/img/banner/header2.svg';
+					bgImage = '/img/banner/banner4.jpg';
 					break;
 				case '/about':
 					title = 'ABOUT';

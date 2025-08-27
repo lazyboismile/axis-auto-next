@@ -18,6 +18,15 @@ const PopularModelCard = (props: PopularModelCardProps) => {
   const device = useDeviceDetect();
   const router = useRouter();
 
+  //** HANDLERS */
+  const pushDetailHandler = async (modelId: string) => {
+		console.log('modelId:', modelId)
+		await router.push({
+			pathname: '/model/detail',
+			query: {id: modelId} 
+		});
+	}
+
   const renderCardContent = () => (
     <>
       <Box
@@ -26,6 +35,7 @@ const PopularModelCard = (props: PopularModelCardProps) => {
         style={{
           backgroundImage: `url(${model?.modelImages?.[0] ? `${REACT_APP_API_URL}/${model.modelImages[0]}` : '/img/fallback-image.jpg'})`
         }}
+        onClick={() => pushDetailHandler(model._id)}
       >
         {model?.modelViews >= topModelRank && (
           <div className="status">
@@ -41,7 +51,7 @@ const PopularModelCard = (props: PopularModelCardProps) => {
         {device === 'mobile' && <Divider sx={{ mt: '15px', mb: '17px', background: '#585353' }} />}
       </Box>
       <Box component={'div'} className={'info'}>
-        <strong className={'title'}>{model.modelYear} - {model.modelTitle}</strong>
+        <strong className={'title'} onClick={() => pushDetailHandler(model._id)}>{model.modelYear} - {model.modelTitle}</strong>
         <p className={'desc'}>
           {model.modelDesc
             ? model.modelDesc.length > modelDescShort
