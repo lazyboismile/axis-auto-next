@@ -1,27 +1,15 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import {
-	TableCell,
-	TableHead,
-	TableBody,
-	TableRow,
-	Table,
-	TableContainer,
-	Button,
-	Menu,
-	Fade,
-	MenuItem,
-	Box,
-	Checkbox,
-	Toolbar,
+	Box, Button, Checkbox, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Toolbar, Tooltip
 } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
-import { IconButton, Tooltip } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import { Stack } from '@mui/material';
-import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import dayjs from 'dayjs';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { NotePencil } from 'phosphor-react';
+import React, { useState } from 'react';
+import { Notice } from '../../../types/notice/notice';
 
 type Order = 'asc' | 'desc';
 
@@ -173,10 +161,13 @@ interface NoticeListType {
 	handleMenuIconClick?: any;
 	handleMenuIconClose?: any;
 	generateMentorTypeHandle?: any;
+	notices?: any[];
+	removeNoticeHandler: any;
 }
 
 export const NoticeList = (props: NoticeListType) => {
 	const {
+		notices = [],
 		dense,
 		membersData,
 		searchMembers,
@@ -184,10 +175,12 @@ export const NoticeList = (props: NoticeListType) => {
 		handleMenuIconClick,
 		handleMenuIconClose,
 		generateMentorTypeHandle,
+		removeNoticeHandler,
 	} = props;
 	const router = useRouter();
 
 	/** APOLLO REQUESTS **/
+
 	/** LIFECYCLES **/
 	/** HANDLERS **/
 
@@ -198,46 +191,75 @@ export const NoticeList = (props: NoticeListType) => {
 					{/*@ts-ignore*/}
 					<EnhancedTableToolbar />
 					<TableBody>
-						{[1, 2, 3, 4, 5].map((ele: any, index: number) => {
-							const member_image = '/img/profile/defaultUser.svg';
+					{notices && notices.length > 0 ? (
+						notices.map((notice: Notice, index: number) => {
+						const member_image = notice?.memberData?.memberImage?.[0] || '/image/profile/defaultUser.svg';
 
-							return (
-								<TableRow hover key={'member._id'} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-									<TableCell padding="checkbox">
-										<Checkbox color="primary" />
-									</TableCell>
-									<TableCell align="left">mb id</TableCell>
-									<TableCell align="left">member.mb_full_name</TableCell>
-									<TableCell align="left">member.mb_phone</TableCell>
-									<TableCell align="left" className={'name'}>
-										<Stack direction={'row'}>
-											<Link href={`/_admin/users/detail?mb_id=$'{member._id'}`}>
-												<div>
-													<Avatar alt="Remy Sharp" src={member_image} sx={{ ml: '2px', mr: '10px' }} />
-												</div>
-											</Link>
-											<Link href={`/_admin/users/detail?mb_id=${'member._id'}`}>
-												<div>member.mb_nick</div>
-											</Link>
-										</Stack>
-									</TableCell>
-									<TableCell align="left">member.mb_phone</TableCell>
-									<TableCell align="left">member.mb_phone</TableCell>
-									<TableCell align="right">
-										<Tooltip title={'delete'}>
-											<IconButton>
-												<DeleteRoundedIcon />
-											</IconButton>
-										</Tooltip>
-										<Tooltip title="edit">
-											<IconButton onClick={() => router.push(`/_admin/cs/notice_create?id=notice._id`)}>
-												<NotePencil size={24} weight="fill" />
-											</IconButton>
-										</Tooltip>
-									</TableCell>
-								</TableRow>
-							);
-						})}
+						const createdAt = notice.createdAt
+							? dayjs(
+								typeof notice.createdAt === 'string'
+								? notice.createdAt
+								//@ts-ignore
+								: notice.createdAt.$date
+							).format('YYYY-MM-DD HH:mm')
+							: '—';
+
+						return (
+							<TableRow
+							hover
+							key={notice._id?.toString() || index}
+							sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+							>
+							<TableCell padding="checkbox">
+								<Checkbox color="primary" />
+							</TableCell>
+							<TableCell align="left">{notice.noticeCategory}</TableCell>
+							<TableCell align="left">{notice.noticeTitle}</TableCell>
+							<TableCell align="left">{notice._id}</TableCell>
+							<TableCell align="left" className={'name'}>
+								<Stack direction={'row'}>
+								<Link href={`/member?memberId=${notice?.memberId}`}>
+									<Avatar
+									alt="member"
+									src={member_image}
+									sx={{ ml: '2px', mr: '10px' }}
+									/>
+								</Link>
+								<Link href={`/member?memberId=${notice?.memberId}`}>
+									<div>{notice?.memberData?.memberNick}</div>
+								</Link>
+								</Stack>
+							</TableCell>
+
+							<TableCell align="left">{createdAt}</TableCell>
+
+							<TableCell align="left">{notice.noticeStatus}</TableCell>
+							<TableCell align="right">
+								<Tooltip title={'delete'}>
+								<IconButton onClick={() => removeNoticeHandler(notice._id)}>
+									<DeleteRoundedIcon />
+								</IconButton>
+								</Tooltip>
+								<Tooltip title="edit">
+								<IconButton
+									onClick={() =>
+									router.push(`/admin/cs/notice_create?id=${notice._id}`)
+									}
+								>
+									<NotePencil size={24} weight="fill" />
+								</IconButton>
+								</Tooltip>
+							</TableCell>
+							</TableRow>
+						);
+						})
+					) : (
+						<TableRow>
+						<TableCell colSpan={8} align="center">
+							No FAQs found.
+						</TableCell>
+						</TableRow>
+					)}
 					</TableBody>
 				</Table>
 			</TableContainer>

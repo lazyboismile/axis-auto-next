@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import cookies from 'js-cookie';
 import Link from 'next/link';
 import { useRouter, withRouter } from 'next/router';
-import { ChatsCircle, Headset, User, UserCircleGear } from 'phosphor-react';
+import { ChatsCircle, Headset, ShoppingCart, User, UserCircleGear } from 'phosphor-react';
 import React, { useEffect, useState } from 'react';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 
@@ -93,7 +93,7 @@ const AdminMenuList = (props: any) => {
 		},
 		{
 			title: 'Orders',
-			icon: <UserCircleGear size={20} color="#bdbdbd" weight="fill" />,
+			icon: <ShoppingCart size={20} color="#bdbdbd" weight="fill" />,
 			on_click: () => subMenuChangeHandler('Orders'),
 		},
 		{
@@ -115,6 +115,7 @@ const AdminMenuList = (props: any) => {
 		Community: [{ title: 'List', url: '/admin/community' }],
 		Cs: [
 			{ title: 'FAQ', url: '/admin/cs/faq' },
+			{ title: 'Inquiry', url: '/admin/cs/inquiry' },
 			{ title: 'Notice', url: '/admin/cs/notice' },
 		],
 	};

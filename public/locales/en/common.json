@@ -1,0 +1,163 @@
+{
+  "Home": "Home",
+  "Showroom": "Showroom",
+  "Agents": "Agents",
+  "Blog": "Blog",
+  "About": "About",
+  "My Page": "My Page",
+  "CS": "Customer Service",
+  "Sign In": "Sign In",
+  "Logout": "Logout",
+  "Notifications": "Notifications",
+  "Mark All Read": "Mark All Read",
+  "No notifications": "No notifications",
+  "English": "English",
+  "Korean": "Korean",
+  "Russian": "Russian",
+  "Uzbek": "Uzbek",
+  "joinTitle": "Join AxisAuto",
+  "joinSubtitle": "Receive pricing updates, shopping tips & more!",
+  "theMostSearchedCars": "The Most Searched Cars",
+
+  "mobileApp": "Our Mobile App",
+  "apple": {
+    "downloadOn": "Download on the",
+    "store": "Apple Store"
+  },
+  "google": {
+    "getItOn": "Get it on",
+    "play": "Google Play"
+  },
+
+  "connect": "Connect With Us",
+
+  "newsletter": {
+    "title": "Keep yourself up to date",
+    "placeholder": "Your Email Address",
+    "button": "Sign Up"
+  },
+
+  "company": {
+    "title": "Company",
+    "about": "About us",
+    "blog": "Blog",
+    "services": "Services",
+    "faqs": "FAQs",
+    "terms": "Terms",
+    "contact": "Contact us"
+  },
+
+  "quick": {
+    "title": "Quick Links",
+    "touch": "Get in Touch",
+    "privacy": "Privacy Policy",
+    "pricing": "Pricing Plans",
+    "help": "Help center",
+    "chat": "Live chat",
+    "how": "How it works"
+  },
+
+  "brands": {
+    "title": "Our Brands",
+    "toyota": "Toyota",
+    "porsche": "Porsche",
+    "audi": "Audi",
+    "bmw": "BMW",
+    "ford": "Ford",
+    "nissan": "Nissan",
+    "peugeot": "Peugeot",
+    "chevrolet": "Chevrolet"
+  },
+
+  "vehicles": {
+    "title": "Vehicles Type",
+    "sedan": "Sedan",
+    "hatchback": "Hatchback",
+    "suv": "SUV",
+    "hybrid": "Hybrid",
+    "electric": "Electric",
+    "coupe": "Coupe",
+    "truck": "Truck",
+    "convertible": "Convertible"
+  },
+
+  "sales": {
+    "title": "Sales Hours",
+    "weekdays": "Monday - Friday: 09:00 AM - 09:00 PM",
+    "saturday": "Saturday: 09:00AM - 07:00PM",
+    "sunday": "Sunday: Closed"
+  },
+
+  "copyright": "© AxisAuto - All rights reserved. AxisAuto 2025",
+  "termsPrivacy": "Terms & Conditions · Privacy Notice",
+
+  "aboutPage": {
+    "title": "About",
+    "subtitle": "We're BIG on what matters to you",
+    "cards": [
+      {
+        "title": "Special Financing Offers",
+        "desc": "Flexible payment plans and low-interest financing options tailored to your needs."
+      },
+      {
+        "title": "Trusted Car Dealership",
+        "desc": "Years of reliable service and a reputation built on honesty and transparency."
+      },
+      {
+        "title": "Transparent Pricing",
+        "desc": "Clear, upfront pricing with no hidden fees or unexpected surprises."
+      },
+      {
+        "title": "Expert Car Service",
+        "desc": "Certified mechanics providing top-notch maintenance and repair services."
+      }
+    ]
+  } ,
+
+  "headerFilter": {
+    "mobileTitle": "HEADER FILTER MOBILE",
+    "title": "Select a Body Style",
+    "types": {
+      "sedan": "Sedan",
+      "coupe": "Coupe",
+      "suv": "SUV",
+      "truck": "Truck",
+      "hatchback": "Hatchback",
+      "convertible": "Convertible"
+    }
+  },
+  "columnsTitle": "Columns",
+  "lookingForCar": "Are You Looking For a Car ?",
+  "serviceCommitment": "We are committed to providing our customers with exceptional service.",
+  "getStarted": "Get Started",
+  "advertisementTitle": "Advertisement",
+  "adsTitle": "Online, in-person, everywhere",
+  "adsDescription": "Choose from thousands of vehicles from multiple brands and buy online with Click & Drive, or visit us at one of our dealerships today.",
+  "statisticsTitle": "Statistics",
+  "carsForSale": "CARS FOR SALE",
+  "dealerReviews": "DEALER REVIEWS",
+  "visitorsPerDay": "VISITORS PER DAY",
+  "verifiedDealers": "VERIFIED DEALERS",
+  "upcomingCars": "Upcoming Cars",
+  "recommendedCarsForYou": "Recommended Cars For You",
+  "topAgents": "Top Agents",
+  "seeAllAgents": "See All Agents",
+   "communityBoardHighlights": "Community Board Highlights",
+  "news": "News",
+  "free": "Free",
+  "getInTouch": "Get in Touch",
+  "contactSales": "Contact our Sales Department",
+  "mondayHours": "Monday: 9:00-13:00",
+  "tuesdayHours": "Tuesday: 9:00-13:00",
+  "wednesdayHours": "Wednesday: 9:00-13:00",
+  "thursdayHours": "Thursday: 9:00-13:00",
+  "fridayHours": "Friday: 9:00-13:00",
+  "saturdayHours": "Saturday: 9:00-13:00",
+  "sundayHours": "Sunday: Closed"
+}
+
+
+
+
+
+

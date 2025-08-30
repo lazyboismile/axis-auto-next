@@ -5,40 +5,46 @@ import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import { Box, Stack } from '@mui/material';
+import { useTranslation } from 'next-i18next';
 
 const Footer = () => {
+  const { t, i18n } = useTranslation('common');
+
   return ( 
     <Stack className={"footer-container"}>
       <Stack className={"main"}>
         <Stack className={"left"}>
           <Box component={"div"} className={"footer-box"}>
-            <p className={"join-title"}>Join AxisAuto</p>
-            <span>Receive pricing updates, shopping tips & more!</span>
+            <p className={"join-title"}>{t("joinTitle")}</p>
+            <span>{t("joinSubtitle")}</span>
           </Box>
+
           <Box component={"div"} className={"footer-box"}>
-            <p className={'mobile-title'}>Our Mobile App</p>
+            <p className={'mobile-title'}>{t("mobileApp")}</p>
+
             <Box className={"logo"}>
               <Box className={'icon'}>
                 <AppleIcon />
                 <Box>
-                  <span>Download on the</span>
-                  <p>Apple Store</p>
+                  <span>{t("apple.downloadOn")}</span>
+                  <p>{t("apple.store")}</p>
                 </Box>
               </Box>
             </Box>
 
             <Box className={"logo"}>
               <Box className={'icon'}>
-                < SportsEsportsIcon/>
+                <SportsEsportsIcon/>
                 <Box>
-                  <span>Get it on</span>
-                  <p>Google Play</p>
+                  <span>{t("google.getItOn")}</span>
+                  <p>{t("google.play")}</p>
                 </Box>
               </Box>
             </Box>
           </Box>
+
           <Box component={"div"} className={"footer-box"}>
-            <p className={'mobile-title'}>Connect With Us</p>
+            <p className={'mobile-title'}>{t("connect")}</p>
             <div className={"media-box"}>
               <FacebookOutlinedIcon />
               <TelegramIcon />
@@ -47,67 +53,74 @@ const Footer = () => {
             </div>
           </Box>
         </Stack>
+
         <Stack className={"right"}>
           <Box component={"div"} className={"top"}>
-            <strong>keep yourself up to date</strong>
+            <strong>{t("newsletter.title")}</strong>
             <div>
-              <input type="text" placeholder={"Your Email Address"}/>
-              <span>Sign Up</span>
+              <input type="text" placeholder={t("newsletter.placeholder")}/>
+              <span>{t("newsletter.button")}</span>
             </div>
           </Box>
+
           <Box component={"div"} className={"bottom"}>
             <div>
-              <strong>Company</strong>
-              <span>About us</span>
-              <span>Blog</span>
-              <span>Services</span>
-              <span>FAQs</span>
-              <span>Terms</span>
-              <span>Contact us</span>
+              <strong>{t("company.title")}</strong>
+              <span>{t("company.about")}</span>
+              <span>{t("company.blog")}</span>
+              <span>{t("company.services")}</span>
+              <span>{t("company.faqs")}</span>
+              <span>{t("company.terms")}</span>
+              <span>{t("company.contact")}</span>
             </div>
+
             <div>
-              <strong>Quick Links</strong>
-              <span>Get in Touch</span>
-              <span>Privacy Policy</span>
-              <span>Pricing Plans</span>
-              <span>Help center</span>
-              <span>Live chat</span>
-              <span>How it works</span>
+              <strong>{t("quick.title")}</strong>
+              <span>{t("quick.touch")}</span>
+              <span>{t("quick.privacy")}</span>
+              <span>{t("quick.pricing")}</span>
+              <span>{t("quick.help")}</span>
+              <span>{t("quick.chat")}</span>
+              <span>{t("quick.how")}</span>
             </div>
+
             <div>
-              <strong>Our Brands</strong>
-              <span>Toyota</span>
-              <span>Porsche</span>
-              <span>Audi</span>
-              <span>BMW</span>
-              <span>Ford</span>
-              <span>Nissan</span>
-              <span>Peugeot</span>
-              <span>Chevrolet</span>
+              <strong>{t("brands.title")}</strong>
+              <span>{t("brands.toyota")}</span>
+              <span>{t("brands.porsche")}</span>
+              <span>{t("brands.audi")}</span>
+              <span>{t("brands.bmw")}</span>
+              <span>{t("brands.ford")}</span>
+              <span>{t("brands.nissan")}</span>
+              <span>{t("brands.peugeot")}</span>
+              <span>{t("brands.chevrolet")}</span>
             </div>
+
             <div>
-              <strong>Vehicles Type</strong>
-              <span>Sedan</span>
-              <span>Hatchback</span>
-              <span>SUV</span>
-              <span>Hybrid</span>
-              <span>Electric</span>
-              <span>Coupe</span>
-              <span>Truck</span>
-              <span>Convertible</span>
+              <strong>{t("vehicles.title")}</strong>
+              <span>{t("vehicles.sedan")}</span>
+              <span>{t("vehicles.hatchback")}</span>
+              <span>{t("vehicles.suv")}</span>
+              <span>{t("vehicles.hybrid")}</span>
+              <span>{t("vehicles.electric")}</span>
+              <span>{t("vehicles.coupe")}</span>
+              <span>{t("vehicles.truck")}</span>
+              <span>{t("vehicles.convertible")}</span>
             </div>
+
             <div>
-              <strong>Sales Hours</strong>
-              <span>Monday - Friday: 09:00 AM - 09:00 PM</span>
-              <span>Saturday: 09:00AM - 07:00PM</span>
-              <span>Sunday: Closed</span>
+              <strong>{t("sales.title")}</strong>
+              <span>{t("sales.weekdays")}</span>
+              <span>{t("sales.saturday")}</span>
+              <span>{t("sales.sunday")}</span>
             </div>
           </Box>
         </Stack>
       </Stack>
+
       <Stack className={"second"}>
-        <span>© AxisAuto - All rights reserved. AxisAuto 2025 </span>
-        <span>Terms & Conditions  ·  Privacy Notice</span>
+        <span>{t("copyright")}</span>
+        <span>{t("termsPrivacy")}</span>
       </Stack>
     </Stack>
   )

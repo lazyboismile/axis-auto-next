@@ -1,16 +1,16 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
-    Button,
-    Fade,
-    Menu,
-    MenuItem,
-    Stack,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow
+  Button,
+  Fade,
+  Menu,
+  MenuItem,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow
 } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
@@ -18,7 +18,8 @@ import Link from 'next/link';
 import React from 'react';
 import { REACT_APP_API_URL } from '../../../config';
 import { OrderStatus } from '../../../enums/order.enum';
-import { Order } from '../../../libs/types/order/order';
+import { Order } from '../../../types/order/order';
+import { formatterStr } from '../../../utils';
 
 interface Data {
   id: string;
@@ -71,7 +72,7 @@ interface OrderPanelListProps {
   anchorEl: (HTMLElement | null)[];
   menuIconClickHandler: (event: React.MouseEvent<HTMLElement>, index: number) => void;
   menuIconCloseHandler: () => void;
-  updateOrderHandler: (order: { _id: string; orderStatus: string }) => void;
+  updateOrderHandler: (order: { _id: string; orderStatus: OrderStatus }) => void;
   removeOrderHandler: (id: string) => void;
 }
 
@@ -115,16 +116,16 @@ export const OrderPanelList: React.FC<OrderPanelListProps> = ({
                             sx={{ ml: 1, mr: 2 }}
                           />
                         </Link>
-                        <Link href={`/model/detail?id=${order?._id}`} passHref>
+                        <Link href={`/order/detail?id=${order?._id}`} passHref>
                           <Typography variant="body2">
                             {order?.modelData?.modelTitle}
                           </Typography>
                         </Link>
                       </Stack>
                     </TableCell>
-                    <TableCell align="center">{order.orderPrice}</TableCell>
+                    <TableCell align="center">{formatterStr(order?.orderPrice)}</TableCell>
                     <TableCell align="center">{order?.agentData?.memberNick}</TableCell>
-                    <TableCell align="center">{order?.modelData?.modelLocation}</TableCell>
+                    <TableCell align="center">{order?.buyerData?.memberNick}</TableCell>
                     <TableCell align="center">
                       {order.orderStatus === OrderStatus.CANCELLED && (
                         <Button

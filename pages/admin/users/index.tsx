@@ -1,3 +1,4 @@
+import { useMutation, useQuery } from '@apollo/client';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import { TabContext } from '@mui/lab';
 import { Box, InputAdornment, List, ListItem, Stack } from '@mui/material';
@@ -9,10 +10,13 @@ import TablePagination from '@mui/material/TablePagination';
 import Typography from '@mui/material/Typography';
 import type { NextPage } from 'next';
 import React, { useCallback, useEffect, useState } from 'react';
+import { UPDATE_MEMBER_BY_ADMIN } from '../../../apollo/admin/mutation';
+import { GET_ALL_MEMBERS_BY_ADMIN } from '../../../apollo/admin/query';
 import { MemberPanelList } from '../../../libs/components/admin/users/MemberList';
 import withAdminLayout from '../../../libs/components/layout/LayoutAdmin';
 import { MemberStatus, MemberType } from '../../../libs/enums/member.enum';
 import { sweetErrorHandling } from '../../../libs/sweetAlert';
+import { T } from '../../../libs/types/common';
 import { Member } from '../../../libs/types/member/member';
 import { MembersInquiry } from '../../../libs/types/member/member.input';
 import { MemberUpdate } from '../../../libs/types/member/member.update';
@@ -30,18 +34,39 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 
 	/** APOLLO REQUESTS **/
 
+	const [updateMember] = useMutation(UPDATE_MEMBER_BY_ADMIN);
+
+	const {
+		loading: getAllMembersByAdminLoading,
+		data: getAllMembersByAdminData,
+		error: getAllMembersByAdminError,
+		refetch: getAllMembersByAdminRefetch,
+	} = useQuery(GET_ALL_MEMBERS_BY_ADMIN, {
+		fetchPolicy: "network-only",
+		variables: { input: membersInquiry },
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setMembers(data?.getAllMembersByAdmin?.list);
+			setMembersTotal(data?.getAllMembersByAdmin?.metaCounter[0]?.total)
+		}
+	});
+
 	/** LIFECYCLES **/
-	useEffect(() => {}, [membersInquiry]);
+	useEffect(() => {
+		getAllMembersByAdminRefetch();
+	}, [membersInquiry]);
 
 	/** HANDLERS **/
 	const changePageHandler = async (event: unknown, newPage: number) => {
 		membersInquiry.page = newPage + 1;
+		await getAllMembersByAdminRefetch({ input: membersInquiry });
 		setMembersInquiry({ ...membersInquiry });
 	};
 
 	const changeRowsPerPageHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
 		membersInquiry.limit = parseInt(event.target.value, 10);
 		membersInquiry.page = 1;
+		await getAllMembersByAdminRefetch({ input: membersInquiry });
 		setMembersInquiry({ ...membersInquiry });
 	};
 
@@ -80,7 +105,14 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 
 	const updateMemberHandler = async (updateData: MemberUpdate) => {
 		try {
+			await updateMember({
+				variables: {
+					input: updateData,
+				},
+			});
+
 			menuIconCloseHandler();
+			await getAllMembersByAdminRefetch({ input: membersInquiry });
 		} catch (err: any) {
 			sweetErrorHandling(err).then();
 		}
@@ -195,6 +227,7 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 																text: '',
 															},
 														});
+														await getAllMembersByAdminRefetch({ input: membersInquiry });
 													}}
 												/>
 											)}

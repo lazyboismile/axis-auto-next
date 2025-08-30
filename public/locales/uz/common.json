@@ -1,0 +1,161 @@
+{
+  "Home": "Bosh sahifa",
+  "Showroom": "Ko‘rgazma zali",
+  "Agents": "Agentlar",
+  "Blog": "Blog",
+  "About": "Biz haqimizda",
+  "My Page": "Mening sahifam",
+  "CS": "Mijozlarga xizmat",
+  "Sign In": "Kirish",
+  "Logout": "Chiqish",
+  "Notifications": "Bildirishnomalar",
+  "Mark All Read": "Barchasini o‘qilgan deb belgilash",
+  "No notifications": "Bildirishnoma yo‘q",
+  "English": "Ingliz tili",
+  "Korean": "Koreys tili",
+  "Russian": "Rus tili",
+  "Uzbek": "O‘zbek tili",
+  "joinTitle": "AxisAuto'ga qo‘shiling",
+  "joinSubtitle": "Narx yangiliklari, xarid qilish bo‘yicha maslahatlar va boshqalarni oling!",
+  "theMostSearchedCars": "Eng ko‘p qidirilgan mashinalar",
+
+  "mobileApp": "Mobil ilovamiz",
+  "apple": {
+    "downloadOn": "Yuklab oling",
+    "store": "App Store’dan"
+  },
+  "google": {
+    "getItOn": "Yuklab oling",
+    "play": "Google Play’dan"
+  },
+
+  "connect": "Biz bilan bog‘laning",
+
+  "newsletter": {
+    "title": "So‘nggi yangiliklardan xabardor bo‘ling",
+    "placeholder": "Email manzilingiz",
+    "button": "Obuna bo‘lish"
+  },
+
+  "company": {
+    "title": "Kompaniya",
+    "about": "Biz haqimizda",
+    "blog": "Blog",
+    "services": "Xizmatlar",
+    "faqs": "Savol-javoblar",
+    "terms": "Shartlar",
+    "contact": "Biz bilan bog‘laning"
+  },
+
+  "quick": {
+    "title": "Tezkor havolalar",
+    "touch": "Aloqaga chiqish",
+    "privacy": "Maxfiylik siyosati",
+    "pricing": "Narxlar rejasi",
+    "help": "Yordam markazi",
+    "chat": "Jonli chat",
+    "how": "Qanday ishlaydi"
+  },
+
+  "brands": {
+    "title": "Bizning brendlarimiz",
+    "toyota": "Toyota",
+    "porsche": "Porsche",
+    "audi": "Audi",
+    "bmw": "BMW",
+    "ford": "Ford",
+    "nissan": "Nissan",
+    "peugeot": "Peugeot",
+    "chevrolet": "Chevrolet"
+  },
+
+  "vehicles": {
+    "title": "Avtomobil turlari",
+    "sedan": "Sedan",
+    "hatchback": "Xetchbek",
+    "suv": "Yo‘ltanlamas (SUV)",
+    "hybrid": "Gibrid",
+    "electric": "Elektr",
+    "coupe": "Kupe",
+    "truck": "Yuk mashinasi",
+    "convertible": "Kabriolet"
+  },
+
+  "sales": {
+    "title": "Savdo vaqti",
+    "weekdays": "Dushanba - Juma: 09:00 - 21:00",
+    "saturday": "Shanba: 09:00 - 19:00",
+    "sunday": "Yakshanba: Yopiq"
+  },
+
+  "copyright": "© AxisAuto - Barcha huquqlar himoyalangan. AxisAuto 2025",
+  "termsPrivacy": "Foydalanish shartlari · Maxfiylik siyosati",
+
+  "aboutPage": {
+    "title": "Biz haqimizda",
+    "subtitle": "Siz uchun muhim bo‘lgan narsalarga katta e’tibor qaratamiz",
+    "cards": [
+      {
+        "title": "Maxsus moliyaviy takliflar",
+        "desc": "Moslashuvchan to‘lov rejalar va sizning ehtiyojlaringizga mos past foizli moliyalashtirish imkoniyatlari."
+      },
+      {
+        "title": "Ishonchli avtosalon",
+        "desc": "Yillar davomida ishonchli xizmat va halollik hamda shaffoflikka asoslangan obro‘."
+      },
+      {
+        "title": "Shaffof narxlar",
+        "desc": "Yashirin to‘lovlar yoki kutilmagan xarajatlarsiz aniq va ochiq narx siyosati."
+      },
+      {
+        "title": "Mutaxassis avtomobil xizmati",
+        "desc": "Sertifikatlangan mexaniklar tomonidan yuqori darajadagi texnik xizmat va ta’mirlash."
+      }
+    ]
+  },
+  "headerFilter": {
+    "mobileTitle": "Mobil filtr",
+    "title": "Kuzov turini tanlang",
+    "types": {
+      "sedan": "Sedan",
+      "coupe": "Kupe",
+      "suv": "SUV",
+      "truck": "Yuk mashinasi",
+      "hatchback": "Xetcbek",
+      "convertible": "Kabriolet"
+    }
+  },
+  "columnsTitle": "Ustunlar",
+  "lookingForCar": "Mashina qidirmoqdamisiz?",
+  "serviceCommitment": "Biz mijozlarimizga mukammal xizmat ko‘rsatishga sodiqmiz.",
+
+  "advertisementTitle": "Reklama",
+  "adsTitle": "Onlayn, shaxsan, hamma joyda",
+  "adsDescription": "Turli brendlardan minglab avtomobillarni tanlang va Click & Drive orqali onlayn xarid qiling yoki bugun bizning dilerlik markazlarimizdan biriga tashrif buyuring.",
+  "getStarted": "Boshlash",
+  "statisticsTitle": "Statistika",
+  "carsForSale": "SOTILUVCHI AVTOMOBILLAR",
+  "dealerReviews": "DILER TAQRIZLARI",
+  "visitorsPerDay": "KUNLIK TASHRIFLAR",
+  "verifiedDealers": "TEKSHIRILGAN DILERLAR",
+  "upcomingCars": "Kutilgan avtomobillar",
+  "recommendedCarsForYou": "Siz uchun tavsiya etilgan avtomobillar",
+  "topAgents": "Eng yaxshi agentlar",
+  "seeAllAgents": "Barcha agentlarni ko‘rish",
+  "communityBoardHighlights": "Jamiyat ta'kidlanganlari",
+  "news": "Yangiliklar",
+  "free": "Bepul",
+  "getInTouch": "Bog'lanish",
+  "contactSales": "Savdo bo‘limimiz bilan bog‘laning",
+  "mondayHours": "Dushanba: 9:00-13:00",
+  "tuesdayHours": "Seshanba: 9:00-13:00",
+  "wednesdayHours": "Chorshanba: 9:00-13:00",
+  "thursdayHours": "Payshanba: 9:00-13:00",
+  "fridayHours": "Juma: 9:00-13:00",
+  "saturdayHours": "Shanba: 9:00-13:00",
+  "sundayHours": "Yakshanba: Yopiq"
+}
+
+
+
+

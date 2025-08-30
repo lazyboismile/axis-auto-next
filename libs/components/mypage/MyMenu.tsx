@@ -267,9 +267,35 @@ const MyMenu = () => {
 									</div>
 								</Link>
 							</ListItem>
+							<ListItem className={pathname === 'myNotifications' ? 'focus' : ''}>
+								<Link
+									href={{
+										pathname: '/mypage',
+										query: { category: 'myNotifications' },
+									}}
+									scroll={false}
+								>
+									<div className={'flex-box'}>
+										<svg
+											className={'com-icon'}
+											fill={category === 'myNotifications' ? 'white' : 'black'}
+											height="20px"
+											width="20px"
+											viewBox="0 0 24 24"
+											xmlns="http://www.w3.org/2000/svg"
+											>
+											<path d="M12 24c1.3 0 2.4-1 2.5-2.3h-5c.1 1.3 1.2 2.3 2.5 2.3zm6.3-6v-5c0-3.1-1.6-5.6-4.6-6.3V6a1.7 1.7 0 0 0-3.4 0v.7c-3 .7-4.6 3.2-4.6 6.3v5l-1.7 1.7c-.2.2-.3.4-.3.7 0 .6.4 1 1 1h18c.6 0 1-.4 1-1 0-.3-.1-.5-.3-.7L18.3 18z" />
+										</svg>
+
+										<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
+											My Notifications
+										</Typography>
+									</div>
+								</Link>
+							</ListItem>
 						</List>
 					</Stack>
-					<Stack className={'section'} sx={{ marginTop: '50px' }}>
+					<Stack className={'section'} sx={{ marginTop: '85px' }}>
 						<div>
 							<Typography className="title" variant={'h5'}>
 								Community

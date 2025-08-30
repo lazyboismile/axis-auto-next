@@ -7,6 +7,11 @@ import Faq from '../../libs/components/cs/Faq';
 import Notice from '../../libs/components/cs/Notice';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
+import { AllNoticesInquiry } from '../../libs/types/notice/notice.input';
+
+interface NoticeProps {
+	initialInput: AllNoticesInquiry;
+}
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {

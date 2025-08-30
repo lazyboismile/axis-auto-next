@@ -80,9 +80,9 @@ const withLayoutBasic = (Component: any) => {
 					desc = 'Buy / For Rent';
 					bgImage = '/img/banner/header8.webp';
 					break;
-				case '/order/':
+				case '/order/detail':
 					title = 'Order Page';
-					desc = 'My Orders';
+					desc = 'User Order';
 					bgImage = '/img/banner/banner4.jpg';
 					break;
 				default:

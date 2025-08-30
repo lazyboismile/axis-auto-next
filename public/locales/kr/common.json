@@ -1,0 +1,160 @@
+{
+  "Home": "홈",
+  "Showroom": "쇼룸",
+  "Agents": "에이전트",
+  "Blog": "블로그",
+  "About": "회사 소개",
+  "My Page": "마이 페이지",
+  "CS": "고객센터",
+  "Sign In": "로그인",
+  "Logout": "로그아웃",
+  "Notifications": "알림",
+  "Mark All Read": "모두 읽음 표시",
+  "No notifications": "알림이 없습니다",
+  "English": "영어",
+  "Korean": "한국어",
+  "Russian": "러시아어",
+  "Uzbek": "우즈베크어",
+  "joinTitle": "AxisAuto 가입하기",
+  "joinSubtitle": "가격 업데이트, 쇼핑 팁 등 받아보세요!",
+  "theMostSearchedCars": "가장 많이 검색된 자동차",
+
+  "mobileApp": "모바일 앱",
+  "apple": {
+    "downloadOn": "다운로드:",
+    "store": "앱스토어"
+  },
+  "google": {
+    "getItOn": "다운로드:",
+    "play": "구글 플레이"
+  },
+
+  "connect": "소셜 연결",
+
+  "newsletter": {
+    "title": "최신 정보를 받아보세요",
+    "placeholder": "이메일 주소",
+    "button": "구독하기"
+  },
+
+  "company": {
+    "title": "회사",
+    "about": "회사 소개",
+    "blog": "블로그",
+    "services": "서비스",
+    "faqs": "자주 묻는 질문",
+    "terms": "이용약관",
+    "contact": "문의하기"
+  },
+
+  "quick": {
+    "title": "바로가기",
+    "touch": "문의하기",
+    "privacy": "개인정보 처리방침",
+    "pricing": "요금제",
+    "help": "도움말 센터",
+    "chat": "실시간 채팅",
+    "how": "이용 방법"
+  },
+
+  "brands": {
+    "title": "브랜드",
+    "toyota": "토요타",
+    "porsche": "포르쉐",
+    "audi": "아우디",
+    "bmw": "BMW",
+    "ford": "포드",
+    "nissan": "닛산",
+    "peugeot": "푸조",
+    "chevrolet": "쉐보레"
+  },
+
+  "vehicles": {
+    "title": "차량 종류",
+    "sedan": "세단",
+    "hatchback": "해치백",
+    "suv": "SUV",
+    "hybrid": "하이브리드",
+    "electric": "전기차",
+    "coupe": "쿠페",
+    "truck": "트럭",
+    "convertible": "컨버터블"
+  },
+
+  "sales": {
+    "title": "영업 시간",
+    "weekdays": "월요일 - 금요일: 오전 09:00 - 오후 09:00",
+    "saturday": "토요일: 오전 09:00 - 오후 07:00",
+    "sunday": "일요일: 휴무"
+  },
+
+  "copyright": "© AxisAuto - 모든 권리 보유. AxisAuto 2025",
+  "termsPrivacy": "이용약관 · 개인정보 처리방침",
+
+  "aboutPage": {
+    "title": "회사 소개",
+    "subtitle": "당신에게 중요한 것에 집중합니다",
+    "cards": [
+      {
+        "title": "특별 금융 혜택",
+        "desc": "맞춤형 할부 계획과 저금리 금융 옵션을 제공합니다."
+      },
+      {
+        "title": "신뢰받는 자동차 딜러십",
+        "desc": "다년간의 신뢰성 있는 서비스와 정직, 투명성으로 쌓은 명성."
+      },
+      {
+        "title": "투명한 가격",
+        "desc": "숨겨진 수수료나 예기치 않은 비용 없이 명확하고 솔직한 가격 제공."
+      },
+      {
+        "title": "전문적인 자동차 서비스",
+        "desc": "공인 정비사가 제공하는 최고의 유지보수 및 수리 서비스."
+      }
+    ]
+  },
+  "headerFilter": {
+    "mobileTitle": "헤더 필터 모바일",
+    "title": "차량 유형을 선택하세요",
+    "types": {
+      "sedan": "세단",
+      "coupe": "쿠페",
+      "suv": "SUV",
+      "truck": "트럭",
+      "hatchback": "해치백",
+      "convertible": "컨버터블"
+    }
+  },
+  "columnsTitle": "칼럼",
+  "lookingForCar": "차를 찾고 계신가요?",
+  "serviceCommitment": "저희는 고객에게 최고의 서비스를 제공하기 위해 최선을 다하고 있습니다.",
+  "advertisementTitle": "광고",
+  "adsTitle": "온라인, 오프라인, 어디서나",
+  "adsDescription": "수천 대의 다양한 브랜드 차량 중에서 선택하고 Click & Drive로 온라인 구매하거나, 오늘 저희 대리점 중 하나를 방문하세요.",
+  "getStarted": "시작하기",
+  "statisticsTitle": "통계",
+  "carsForSale": "판매용 자동차",
+  "dealerReviews": "딜러 리뷰",
+  "visitorsPerDay": "일일 방문자 수",
+  "verifiedDealers": "인증된 딜러",
+  "upcomingCars": "예정된 자동차",
+  "recommendedCarsForYou": "추천 자동차",
+  "topAgents": "최고의 에이전트",
+  "seeAllAgents": "모든 에이전트 보기",
+   "communityBoardHighlights": "커뮤니티 게시판 하이라이트",
+  "news": "뉴스",
+  "free": "자유게시판",
+  "getInTouch": "문의하기",
+  "contactSales": "영업부에 문의",
+  "mondayHours": "월요일: 9:00-13:00",
+  "tuesdayHours": "화요일: 9:00-13:00",
+  "wednesdayHours": "수요일: 9:00-13:00",
+  "thursdayHours": "목요일: 9:00-13:00",
+  "fridayHours": "금요일: 9:00-13:00",
+  "saturdayHours": "토요일: 9:00-13:00",
+  "sundayHours": "일요일: 휴무"
+}
+
+
+
+

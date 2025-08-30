@@ -1,11 +1,14 @@
-import { useReactiveVar } from '@apollo/client';
+import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { Pagination, Stack, Typography } from '@mui/material';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { userVar } from '../../../apollo/store';
+import { UPDATE_ORDER } from '../../../apollo/user/mutation';
+import { GET_MY_AGENT_ORDERS, GET_MY_ORDERS } from '../../../apollo/user/query';
 import { OrderStatus } from '../../enums/order.enum';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
+import { sweetConfirmAlert, sweetErrorHandling } from '../../sweetAlert';
 import { T } from '../../types/common';
 import { Order } from '../../types/order/order';
 import { OrderInquiry } from '../../types/order/order.input';
@@ -14,14 +17,30 @@ import { OrderCard } from './OrderCard';
 const MyOrders: NextPage = ({ initialInput, ...props }: any) => {
 	const device = useDeviceDetect();
 	const [searchFilter, setSearchFilter] = useState<OrderInquiry>(initialInput);
-	const [memberOrders, setMemberOrders] = useState<Order[]>(
-		initialInput.length ? initialInput : [1, 2, 3, 4, 5, 6, 7]
-	);
+	const [memberOrders, setMemberOrders] = useState<Order[]>([]);
 	const [total, setTotal] = useState<number>(0);
 	const user = useReactiveVar(userVar);
 	const router = useRouter();
 
 	/** APOLLO REQUESTS **/
+	const [updateOrder] = useMutation(UPDATE_ORDER);
+	const ORDERS_QUERY = user?.memberType === 'AGENT' ? GET_MY_AGENT_ORDERS : GET_MY_ORDERS;
+
+	const {
+		loading: getMemberOrdersLoading,
+		data: getMemberOrdersData,
+		error: getMemberOrdersError,
+		refetch: getMemberOrdersRefetch,
+	} = useQuery(ORDERS_QUERY, {
+		fetchPolicy: "network-only",
+		variables: { input: searchFilter },
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			const key = user?.memberType === 'AGENT' ? 'getAgentOrders' : 'getMyOrders';
+			setMemberOrders(data?.[key]?.list ?? []);
+			setTotal(data?.[key]?.metaCounter?.[0]?.total ?? 0);
+		}
+	});
 
 	/** HANDLERS **/
 	const paginationHandler = (e: T, value: number) => {
@@ -32,16 +51,34 @@ const MyOrders: NextPage = ({ initialInput, ...props }: any) => {
 		setSearchFilter({ ...searchFilter,   search: { orderStatus: value  }});
 	};
 
-	const deleteOrderHandler = async (id: string) => {};
+	const cancelOrderHandler = async (id: string) => {
+		try {
+			if (await sweetConfirmAlert('Are you sure you want to cancel this order?')) {
+				await updateOrder({ variables: { input: { _id: id, orderStatus: 'CANCELLED' } } });
+				await getMemberOrdersRefetch({ input: searchFilter });
+			}
+		} catch (err: any) {
+			await sweetErrorHandling(err);
+		}
+	};
 
-	const updateOrderHandler = async (status: string, id: string) => {};
+	const updateOrderHandler = async (status: string, id: string) => {
+		try {
+			if (await sweetConfirmAlert(`Are you sure you want to update the ${status}?`)) {
+				await updateOrder({ variables: { input: { _id: id, orderStatus: status } } });
+				await getMemberOrdersRefetch({ input: searchFilter });
+			}
+		} catch (err: any) {
+			await sweetErrorHandling(err);
+		}
+	};
 
 	// if (user?.memberType !== 'AGENT') {
 	// 	router.back();
 	// }
 
 	const tabs = [
-		{ label: "Pending", value: OrderStatus.PENDING },
+		{ label: "PENDING", value: OrderStatus.PENDING },
 		{ label: "PAID", value: OrderStatus.PAID },
 		{ label: "PROCESSING", value: OrderStatus.PROCESSING },
 		{ label: "COMPLETED", value: OrderStatus.COMPLETED },
@@ -76,27 +113,31 @@ const MyOrders: NextPage = ({ initialInput, ...props }: any) => {
 							<Typography className="title-text">Listing Id</Typography>
 							<Typography className="title-text">Date Published</Typography>
 							<Typography className="title-text">Status</Typography>
-							<Typography className="title-text">Agent Email</Typography>
+							<Typography className="title-text">
+								{user?.memberType === 'AGENT' ? 'USER' : 'AGENT'} Email
+							</Typography>
 							<Typography className="title-text">Action</Typography>
 						</Stack>
 
-						{memberOrders?.length === 0 ? (
-							<div className={'no-data'}>
-								<img src="/img/icons/icoAlert.svg" alt="" />
-								<p>No Order found!</p>
-							</div>
+						<Stack className="list-box">
+						{memberOrders?.length ? (
+							memberOrders.map((order: Order) => (
+							<OrderCard
+								key={order._id}
+								memberPage={user?.memberType !== 'AGENT'}
+								userType={user?.memberType === 'AGENT' ? 'AGENT' : user?.memberType === 'USER' ? 'USER' : undefined}
+								order={order}
+								cancelOrderHandler={cancelOrderHandler}
+								updateOrderHandler={updateOrderHandler}
+							/>
+							))
 						) : (
-							memberOrders.map((order: Order) => {
-								return (
-									<OrderCard
-										order={order}
-										deleteOrderHandler={deleteOrderHandler}
-										updateOrderHandler={updateOrderHandler}
-									/>
-								);
-							})
+							<div className="no-data">
+							<img src="/img/icons/icoAlert.svg" alt="No Orders" />
+							<p>No orders found!</p>
+							</div>
 						)}
-
+						</Stack>
 						{memberOrders.length !== 0 && (
 							<Stack className="pagination-config">
 								<Stack className="pagination-box">
@@ -104,7 +145,18 @@ const MyOrders: NextPage = ({ initialInput, ...props }: any) => {
 										count={Math.ceil(total / searchFilter.limit)}
 										page={searchFilter.page}
 										shape="circular"
-										color="primary"
+										sx={{
+											'& .MuiPaginationItem-root': {
+											color: '#405FF2', // text color for numbers
+											},
+											'& .MuiPaginationItem-root.Mui-selected': {
+											backgroundColor: '#405FF2', // selected button background
+											color: '#fff',              // selected button text
+											},
+											'& .MuiPaginationItem-root.Mui-selected:hover': {
+											backgroundColor: '#3249c7', // darker on hover
+											},
+										}}
 										onChange={paginationHandler}
 									/>
 								</Stack>
@@ -125,7 +177,7 @@ MyOrders.defaultProps = {
 		page: 1,
 		limit: 5,
 		search: {
-			OrderStatus: 'PENDING',
+			orderStatus: 'PENDING',
 		},
 	},
 };

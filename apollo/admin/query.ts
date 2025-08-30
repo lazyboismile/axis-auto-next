@@ -116,6 +116,111 @@ export const GET_ALL_MODELS_BY_ADMIN = gql`
  *        ORDER        *
  *************************/
 
+export const GET_ORDER_BY_ADMIN = gql`
+    query GetOrderByAdmin($input: String!) {
+        getOrderByAdmin(orderId: $input) {
+            _id
+            buyerId
+            modelId
+            agentId
+            orderStatus
+            orderPrice
+            paymentMethod
+            isPaid
+            soldAt
+            paidAt
+            processedAt
+            createdAt
+            updatedAt
+            modelData {
+                _id
+                modelBrand
+                modelType
+                modelStatus
+                modelLocation
+                modelAddress
+                modelTitle
+                modelYear
+                modelDesc
+                modelPrice
+                modelCurrency
+                modelColour
+                modelTransmission
+                modelFuelType
+                modelOdometer
+                modelOdoUnit
+                modelUlezCompliance
+                modelViews
+                modelLikes
+                modelComments
+                modelRank
+                modelImages
+                memberId
+                soldAt
+                deletedAt
+                createdAt
+                updatedAt
+            }
+            agentData {
+                _id
+                memberType
+                memberStatus
+                memberAuthType
+                memberEmail
+                memberNick
+                memberFullName
+                memberImage
+                memberAddress
+                memberDesc
+                memberModels
+                memberArticles
+                memberFollowers
+                memberFollowings
+                memberPoints
+                memberSales
+                memberLikes
+                memberViews
+                memberComments
+                memberRank
+                memberWarnings
+                memberBlocks
+                deletedAt
+                createdAt
+                updatedAt
+                accessToken
+            }
+            buyerData {
+                _id
+                memberType
+                memberStatus
+                memberAuthType
+                memberEmail
+                memberNick
+                memberFullName
+                memberImage
+                memberAddress
+                memberDesc
+                memberModels
+                memberArticles
+                memberFollowers
+                memberFollowings
+                memberPoints
+                memberSales
+                memberLikes
+                memberViews
+                memberComments
+                memberRank
+                memberWarnings
+                memberBlocks
+                deletedAt
+                createdAt
+                updatedAt
+                accessToken
+            }
+        }
+    }
+`;
+
 export const GET_ALL_ORDERS_BY_ADMIN = gql`
     query GetAllOrdersByAdmin($input: OrderInquiry!) {
         getAllOrdersByAdmin(input: $input) {
@@ -284,48 +389,54 @@ export const GET_FAQS_BY_ADMIN = gql`
 
 export const GET_ALL_BOARD_ARTICLES_BY_ADMIN = gql`
 	query GetAllBoardArticlesByAdmin($input: AllBoardArticlesInquiry!) {
-		getAllBoardArticlesByAdmin(input: $input) {
-			list {
-				_id
-				articleCategory
-				articleStatus
-				articleTitle
-				articleContent
-				articleImage
-				articleViews
-				articleLikes
-				memberId
-				createdAt
-				updatedAt
-				memberData {
-					_id
-					memberType
-					memberStatus
-					memberAuthType
-					memberPhone
-					memberNick
-					memberFullName
-					memberImage
-					memberAddress
-					memberDesc
-					memberWarnings
-					memberBlocks
-					memberProperties
-					memberRank
-					memberPoints
-					memberLikes
-					memberViews
-					deletedAt
-					createdAt
-					updatedAt
-					accessToken
-				}
-			}
-			metaCounter {
-				total
-			}
-		}
-	}
+        getAllBoardArticlesByAdmin(input: $input) {
+            list {
+                _id
+                articleCategory
+                articleStatus
+                articleTitle
+                articleContent
+                articleImage
+                articleViews
+                articleLikes
+                articleComments
+                memberId
+                createdAt
+                updatedAt
+                memberData {
+                    _id
+                    memberType
+                    memberStatus
+                    memberAuthType
+                    memberEmail
+                    memberNick
+                    memberFullName
+                    memberImage
+                    memberAddress
+                    memberDesc
+                    memberModels
+                    memberArticles
+                    memberFollowers
+                    memberFollowings
+                    memberPoints
+                    memberSales
+                    memberLikes
+                    memberViews
+                    memberComments
+                    memberRank
+                    memberWarnings
+                    memberBlocks
+                    deletedAt
+                    createdAt
+                    updatedAt
+                    accessToken
+                }
+            }
+            metaCounter {
+                total
+            }
+        }
+    }
 `;
 
 /**************************
@@ -346,26 +457,31 @@ export const GET_COMMENTS = gql`
 				updatedAt
 				memberData {
 					_id
-					memberType
-					memberStatus
-					memberAuthType
-					memberPhone
-					memberNick
-					memberFullName
-					memberImage
-					memberAddress
-					memberDesc
-					memberWarnings
-					memberBlocks
-					memberProperties
-					memberRank
-					memberPoints
-					memberLikes
-					memberViews
-					deletedAt
-					createdAt
-					updatedAt
-					accessToken
+                    memberType
+                    memberStatus
+                    memberAuthType
+                    memberEmail
+                    memberNick
+                    memberFullName
+                    memberImage
+                    memberAddress
+                    memberDesc
+                    memberModels
+                    memberArticles
+                    memberFollowers
+                    memberFollowings
+                    memberPoints
+                    memberSales
+                    memberLikes
+                    memberViews
+                    memberComments
+                    memberRank
+                    memberWarnings
+                    memberBlocks
+                    deletedAt
+                    createdAt
+                    updatedAt
+                    accessToken
 				}
 			}
 			metaCounter {
@@ -373,4 +489,57 @@ export const GET_COMMENTS = gql`
 			}
 		}
 	}
+`;
+
+/**************************
+ *         NOTICE        *
+ *************************/
+
+export const GET_ALL_NOTICE_BY_ADMIN = gql`
+    query GetAllNoticesByAdmin($input: NoticesInquiry!) {
+        getAllNoticesByAdmin(input: $input) {
+            list {
+                _id
+                noticeCategory
+                noticeStatus
+                noticeTitle
+                noticeContent
+                memberId
+                event
+                createdAt
+                updatedAt
+                memberData {
+                    _id
+                    memberType
+                    memberStatus
+                    memberAuthType
+                    memberEmail
+                    memberNick
+                    memberFullName
+                    memberImage
+                    memberAddress
+                    memberDesc
+                    memberModels
+                    memberArticles
+                    memberFollowers
+                    memberFollowings
+                    memberPoints
+                    memberSales
+                    memberLikes
+                    memberViews
+                    memberComments
+                    memberRank
+                    memberWarnings
+                    memberBlocks
+                    deletedAt
+                    createdAt
+                    updatedAt
+                    accessToken
+                }
+            }
+            metaCounter {
+                total
+            }
+        }
+    }
 `;

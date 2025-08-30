@@ -112,9 +112,9 @@ export const REMOVE_MODEL_BY_ADMIN = gql`
  *        ORDER        *
  *************************/
 
-export const UPDATE_ORDER = gql`
-    mutation UpdateOrder($input: OrderUpdate!) {
-        updateOrder(input: $input) {
+export const UPDATE_ORDER_BY_ADMIN = gql`
+    mutation UpdateOrderByAdmin($input: OrderUpdate!) {
+        updateOrderByAdmin(input: $input) {
             _id
             buyerId
             modelId
@@ -245,3 +245,35 @@ export const REMOVE_COMMENT_BY_ADMIN = gql`
 		}
 	}
 `;
+
+/**************************
+ *         NOTICE        *
+ *************************/
+
+export const UPDATE_NOTICE_BY_ADMIN = gql`
+    mutation UpdateNoticeByAdmin($input: NoticeUpdate!) {
+        updateNoticeByAdmin(input: $input) {
+            _id
+            noticeCategory
+            noticeStatus
+            noticeTitle
+            noticeContent
+            memberId
+            event
+        }
+    }
+`
+
+export const REMOVE_NOTICE_BY_ADMIN = gql`
+    mutation RemoveNoticeByAdmin($input: String!) {
+        removeNoticeByAdmin(noticeId: $input) {
+            _id
+            noticeCategory
+            noticeStatus
+            noticeTitle
+            noticeContent
+            memberId
+            event
+        }
+    }
+`

@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/client';
 import { Stack, Typography } from '@mui/material';
 import Link from 'next/link';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { GET_BOARD_ARTICLES } from '../../../apollo/user/query';
 import { BoardArticleCategory } from '../../enums/board-article.enum';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
@@ -11,6 +12,7 @@ import CommunityCard from './CommunityCard';
 
 const CommunityBoards = () => {
 	const device = useDeviceDetect();
+	const { t, i18n } = useTranslation('common');
 	const [searchCommunity, setSearchCommunity] = useState({
 		page: 1,
 		sort: 'articleViews',
@@ -50,38 +52,38 @@ const CommunityBoards = () => {
 	});
 
 	if (device === 'mobile') {
-		return <div>COMMUNITY BOARDS (MOBILE)</div>;
+		return <div>{t("communityBoardHighlights")} (MOBILE)</div>;
 	} else {
 		return (
 			<Stack className={'community-board'}>
 				<Stack className={'container'}>
 					<Stack>
-						<Typography variant={'h1'}>COMMUNITY BOARD HIGHLIGHTS</Typography>
+						<Typography variant={'h1'}>{t("communityBoardHighlights")}</Typography>
 					</Stack>
 					<Stack className="community-main">
 						<Stack className={'community-left'}>
 							<Stack className={'content-top'}>
 								<Link href={'/community?articleCategory=NEWS'}>
-									<span>News</span>
+									<span>{t("news")}</span>
 								</Link>
 								<img src="/img/icons/arrowBig.svg" alt="" />
 							</Stack>
 							<Stack className={'card-wrap'}>
 								{newsArticles.map((article, index) => {
-									return <CommunityCard vertical={true} article={article} index={index} key={index} />;
+									return <CommunityCard vertical={true} article={article} index={index} key={article?._id} />;
 								})}
 							</Stack>
 						</Stack>
 						<Stack className={'community-right'}>
 							<Stack className={'content-top'}>
 								<Link href={'/community?articleCategory=FREE'}>
-									<span>Free</span>
+									<span>{t("free")}</span>
 								</Link>
 								<img src="/img/icons/arrowBig.svg" alt="" />
 							</Stack>
 							<Stack className={'card-wrap vertical'}>
 								{freeArticles.map((article, index) => {
-									return <CommunityCard vertical={false} article={article} index={index} key={index} />;
+									return <CommunityCard vertical={false} article={article} index={index} key={article?._id} />;
 								})}
 							</Stack>
 						</Stack>

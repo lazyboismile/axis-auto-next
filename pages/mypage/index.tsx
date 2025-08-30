@@ -14,6 +14,7 @@ import MyArticles from '../../libs/components/mypage/MyArticles';
 import MyFavorites from '../../libs/components/mypage/MyFavorites';
 import MyMenu from '../../libs/components/mypage/MyMenu';
 import MyModels from '../../libs/components/mypage/MyModels';
+import MyNotifications from '../../libs/components/mypage/MyNotifications';
 import MyOrders from '../../libs/components/mypage/MyOrders';
 import MyProfile from '../../libs/components/mypage/MyProfile';
 import RecentlyVisited from '../../libs/components/mypage/RecentlyVisited';
@@ -130,6 +131,7 @@ const MyPage: NextPage = () => {
 									{category === 'myOrders' && <MyOrders />}
 									{category === 'myArticles' && <MyArticles />}
 									{category === 'writeArticle' && <WriteArticle />}
+									{category === 'myNotifications' && <MyNotifications redirectToMemberPageHandler={redirectToMemberPageHandler}/>}
 									{category === 'myProfile' && <MyProfile />}
 									{category === 'followers' && (
 										<MemberFollowers

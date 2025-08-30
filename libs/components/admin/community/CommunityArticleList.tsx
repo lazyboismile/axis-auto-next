@@ -152,6 +152,7 @@ const CommunityArticleList = (props: CommunityArticleListProps) => {
 								<TableRow hover key={article._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
 									<TableCell align="left">{article._id}</TableCell>
 									<TableCell align="left">
+										{article.articleStatus === BoardArticleStatus.ACTIVE ? (
 										<Box component={'div'}>
 											{article.articleTitle}
 											<Link
@@ -165,6 +166,11 @@ const CommunityArticleList = (props: CommunityArticleListProps) => {
 												</IconButton>
 											</Link>
 										</Box>
+										) : (
+											<Box component={'div'}>
+												{article.articleTitle}
+										</Box>
+										)}
 									</TableCell>
 									<TableCell align="left">{article.articleCategory}</TableCell>
 									<TableCell align="left" className={'name'}>
@@ -187,7 +193,7 @@ const CommunityArticleList = (props: CommunityArticleListProps) => {
 										<Moment format={'DD.MM.YY HH:mm'}>{article?.createdAt}</Moment>
 									</TableCell>
 									<TableCell align="center">
-										{article.articleStatus === 'DELETE' ? (
+										{article.articleStatus === BoardArticleStatus.DELETE ? (
 											<Button
 												variant="outlined"
 												sx={{ p: '3px', border: 'none', ':hover': { border: '1px solid #000000' } }}

@@ -1,9 +1,9 @@
-import { useReactiveVar } from '@apollo/client';
+import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { Logout } from '@mui/icons-material';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import SmartphoneIcon from '@mui/icons-material/Smartphone';
-import { Box, Stack } from '@mui/material';
+import { Badge, Box, IconButton, Popover, Stack } from '@mui/material';
 import Button from '@mui/material/Button';
 import Menu, { MenuProps } from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -14,11 +14,23 @@ import { useRouter, withRouter } from 'next/router';
 import { CaretDown } from 'phosphor-react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { userVar } from '../../apollo/store';
+import { READ_ALL_NOTIFICATIONS } from '../../apollo/user/mutation';
+import { GET_ALL_NOTIFICATIONS } from '../../apollo/user/query';
 import { getJwtToken, logOut, updateUserInfo } from '../auth';
-import { REACT_APP_API_URL } from '../config';
+import { Messages, REACT_APP_API_URL } from '../config';
+import { NotificationStatus } from '../enums/notification.enum';
 import useDeviceDetect from '../hooks/useDeviceDetect';
+import { sweetTopSmallSuccessAlert } from '../sweetAlert';
+import { T } from '../types/common';
+import { Notification } from '../types/notification/notification';
+import { AllNotificationInquiry } from '../types/notification/notification.input';
 
-const Top = () => {
+interface NotificationProps {
+	initialInput?: AllNotificationInquiry;
+}
+
+const Top = (props: NotificationProps) => {
+	const { initialInput } = props;
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const { t, i18n } = useTranslation('common');
@@ -32,8 +44,27 @@ const Top = () => {
 	const [bgColor, setBgColor] = useState<boolean>(false);
 	const [logoutAnchor, setLogoutAnchor] = React.useState<null | HTMLElement>(null);
 	const logoutOpen = Boolean(logoutAnchor);
+	const [notifications, setNotifications] = useState<Notification[]>([]);
+
+	/** APOLLO REQUESTS **/
+	const [readAllNotifications] = useMutation(READ_ALL_NOTIFICATIONS);
+
+	const {
+		loading: getNotificationsLoading,
+		data: getNotificationsData,
+		error: getNotificationsError,
+		refetch: getNotificationsRefetch,
+	} = useQuery(GET_ALL_NOTIFICATIONS, {
+		fetchPolicy: "network-only",
+		variables: { input: initialInput },
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setNotifications(data?.getNotifications?.list);
+		}
+	});
 
 	/** LIFECYCLES **/
+
 	useEffect(() => {
 		if (localStorage.getItem('locale') === null) {
 			localStorage.setItem('locale', 'en');
@@ -59,10 +90,32 @@ const Top = () => {
 	}, []);
 
 	/** HANDLERS **/
+
+	const readAllHandler = async (userId: string) => {
+		try {
+			if (!user._id) throw new Error(Messages.error2)
+
+			await readAllNotifications({
+				variables: {
+					input: userId,
+				},
+			});
+
+			await sweetTopSmallSuccessAlert('Already Clear!', 800);
+			await getNotificationsRefetch();
+		} catch (err: any) {
+			console.log("Notifaction not available now:", err)
+		}
+	}
+
 	const langClick = (e: any) => {
 		setAnchorEl2(e.currentTarget);
 	};
 
+	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+		setAnchorEl(event.currentTarget);
+	};
+	
 	const langClose = () => {
 		setAnchorEl2(null);
 	};
@@ -237,7 +290,133 @@ const Top = () => {
 							)}
 
 							<div className={'lan-box'}>
-								{user?._id && <NotificationsOutlinedIcon className={'notification-icon'} />}
+								{user?._id && (
+									<Box>
+									<Badge
+										badgeContent={notifications.length}
+										color="error"
+										overlap="circular"
+										invisible={notifications.length === 0}
+									>
+										<IconButton onClick={handleClick} sx={{ color: "#1976d2" }}>
+										<NotificationsOutlinedIcon />
+										</IconButton>
+									</Badge>
+
+									<Popover
+										open={open}
+										anchorEl={anchorEl}
+										onClose={handleClose}
+										anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+										transformOrigin={{ vertical: "top", horizontal: "right" }}
+										PaperProps={{
+										sx: {
+											width: 320,
+											borderRadius: 3,
+											boxShadow: 4,
+											p: 0,
+											overflow: "hidden",
+										},
+										}}
+									>
+										{/* Header */}
+										<Box
+										sx={{
+											px: 3,
+											py: 1.5,
+											backgroundColor: "#1976d2",
+											color: "#fff",
+											fontWeight: 600,
+											fontSize: "16px",
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "space-between",
+										}}
+										>
+										<span>Notifications</span>
+										{notifications.some(n => n.notificationStatus === "WAIT") && (
+											<Button
+											size="small"
+											variant="contained"
+											color="secondary"
+											sx={{
+												textTransform: "none",
+												fontSize: "13px",
+												backgroundColor: "#fff",
+												color: "#1976d2",
+												"&:hover": { backgroundColor: "#f0f0f0" },
+											}}
+											onClick={() => readAllHandler(user._id)}
+											>
+											Mark All Read
+											</Button>
+										)}
+										</Box>
+
+										{/* List */}
+										<Box sx={{ maxHeight: 280, overflowY: "auto", bgcolor: "#f9f9f9" }}>
+										{notifications.length > 0 ? (
+											notifications.map((notification: Notification) => (
+											<Box
+												key={notification._id}
+												sx={{
+												px: 3,
+												py: 1.5,
+												display: "flex",
+												alignItems: "center",
+												gap: 1.5,
+												backgroundColor:
+													notification.notificationStatus === "WAIT"
+													? "#e3f2fd"
+													: "transparent",
+												cursor: "pointer",
+												"&:hover": { backgroundColor: "#d0e7ff" },
+												borderBottom: "1px solid #eee",
+												}}
+											>
+												<Box
+												component="img"
+												src={
+													notification?.authorData?.memberImage
+													? `${REACT_APP_API_URL}/${notification.authorData.memberImage}`
+													: "/img/profile/defaultUser.svg"
+												}
+												alt={notification?.authorData?.memberNick}
+												sx={{
+													width: 32,
+													height: 32,
+													borderRadius: "50%",
+													objectFit: "cover",
+												}}
+												/>
+												<Box sx={{ flex: 1 }}>
+												<Box sx={{ fontWeight: 500 }}>
+													{notification.notificationTitle}
+												</Box>
+												<Box sx={{ fontSize: 12, color: "#555" }}>
+													from {notification?.authorData?.memberNick}
+												</Box>
+												</Box>
+											</Box>
+											))
+										) : (
+											<Box
+											sx={{
+												px: 3,
+												py: 6,
+												textAlign: "center",
+												color: "#888",
+												fontSize: "14px",
+											}}
+											>
+											No notifications
+											</Box>
+										)}
+										</Box>
+									</Popover>
+									</Box>
+
+								)}
 								<Button
 									disableRipple
 									className="btn-lang"
@@ -302,6 +481,18 @@ const Top = () => {
 			</Stack>
 		);
 	}
+};
+
+Top.defaultProps = {
+	initialInput: {
+		page: 1,
+        limit: 10,
+        sort: "createdAt",
+        direction: "DESC",
+        search: {
+			notificationStatus: NotificationStatus.WAIT
+		}
+	},
 };
 
 export default withRouter(Top);

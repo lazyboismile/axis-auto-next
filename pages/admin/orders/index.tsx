@@ -1,3 +1,4 @@
+import { useMutation, useQuery } from '@apollo/client';
 import { TabContext } from '@mui/lab';
 import { Box, List, ListItem } from '@mui/material';
 import Divider from '@mui/material/Divider';
@@ -5,10 +6,13 @@ import TablePagination from '@mui/material/TablePagination';
 import Typography from '@mui/material/Typography';
 import type { NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
+import { REMOVE_ORDER_BY_ADMIN, UPDATE_ORDER_BY_ADMIN } from '../../../apollo/admin/mutation';
+import { GET_ALL_ORDERS_BY_ADMIN } from '../../../apollo/admin/query';
 import { OrderPanelList } from '../../../libs/components/admin/orders/OrderList';
 import withAdminLayout from '../../../libs/components/layout/LayoutAdmin';
 import { OrderStatus } from '../../../libs/enums/order.enum';
 import { sweetConfirmAlert, sweetErrorHandling } from '../../../libs/sweetAlert';
+import { T } from '../../../libs/types/common';
 import { Order } from '../../../libs/types/order/order';
 import { OrderInquiry } from '../../../libs/types/order/order.input';
 import { OrderUpdate } from '../../../libs/types/order/order.update';
@@ -24,19 +28,40 @@ const AdminOrders: NextPage = ({ initialInquiry, ...props }: any) => {
 	const [searchType, setSearchType] = useState('ALL');
 
 	/** APOLLO REQUESTS **/
+	const [updateOrderByAdmin] = useMutation(UPDATE_ORDER_BY_ADMIN);
+	const [removeOrderByAdmin] = useMutation(REMOVE_ORDER_BY_ADMIN);
+
+	const {
+		loading: getAllOrdersByAdminLoading,
+		data: getAllOrdersByAdminData,
+		error: getAllOrdersByAdminError,
+		refetch: getAllOrdersByAdminRefetch,
+	} = useQuery(GET_ALL_ORDERS_BY_ADMIN, {
+		fetchPolicy: "network-only",
+		variables: { input: ordersInquiry },
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setOrders(data?.getAllOrdersByAdmin?.list);
+			setOrdersTotal(data?.getAllOrdersByAdmin?.metaCounter[0]?.total)
+		}
+	});
 
 	/** LIFECYCLES **/
-	useEffect(() => {}, [ordersInquiry]);
+	useEffect(() => {
+		getAllOrdersByAdminRefetch();
+	}, [ordersInquiry]);
 
 	/** HANDLERS **/
 	const changePageHandler = async (event: unknown, newPage: number) => {
 		ordersInquiry.page = newPage + 1;
+		getAllOrdersByAdminRefetch();
 		setOrdersInquiry({ ...ordersInquiry });
 	};
 
 	const changeRowsPerPageHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
 		ordersInquiry.limit = parseInt(event.target.value, 10);
 		ordersInquiry.page = 1;
+		getAllOrdersByAdminRefetch();
 		setOrdersInquiry({ ...ordersInquiry });
 	};
 
@@ -56,6 +81,9 @@ const AdminOrders: NextPage = ({ initialInquiry, ...props }: any) => {
 		setOrdersInquiry({ ...ordersInquiry, page: 1});
 
 		switch (newValue) {
+			case 'ALL':
+				setOrdersInquiry({ ...ordersInquiry, page: 1, search: {} });
+				break;
             case 'PENDING':
 				setOrdersInquiry({ ...ordersInquiry, search: { orderStatus: OrderStatus.PENDING } });
 				break;
@@ -74,11 +102,38 @@ const AdminOrders: NextPage = ({ initialInquiry, ...props }: any) => {
 		}
 	};
 
+	const searchTypeHandler = async (newValue: string) => {
+		try {
+			setSearchType(newValue);
+
+			if (newValue !== 'ALL') {
+				setOrdersInquiry({
+					...ordersInquiry,
+					page: 1,
+					search: {
+						...ordersInquiry.search,
+						orderStatus: newValue as OrderStatus,
+					},
+				});
+			} else {
+				setOrdersInquiry({ ...ordersInquiry, page: 1, search: {} });
+			}
+
+		} catch (err: any) {
+			console.log('searchTypeHandler: ', err.message);
+		}
+	};
+
 	const removeOrderHandler = async (id: string) => {
 		try {
-			if (await sweetConfirmAlert('Are you sure to remove?')) {
+			if (await sweetConfirmAlert('are you sure to remove?')) {
+				await removeOrderByAdmin({
+					variables: {
+						input: id
+					},
+				});
+				getAllOrdersByAdminRefetch();
 			}
-			menuIconCloseHandler();
 		} catch (err: any) {
 			sweetErrorHandling(err).then();
 		}
@@ -87,6 +142,13 @@ const AdminOrders: NextPage = ({ initialInquiry, ...props }: any) => {
 	const updateOrderHandler = async (updateData: OrderUpdate) => {
 		try {
 			console.log('+updateData: ', updateData);
+			await updateOrderByAdmin({
+				variables: {
+					input: updateData,
+				},
+			});
+
+			getAllOrdersByAdminRefetch();
 			menuIconCloseHandler();
 		} catch (err: any) {
 			menuIconCloseHandler();

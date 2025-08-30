@@ -16,6 +16,7 @@ import React, { useEffect, useState } from 'react';
 import { userVar } from '../../../apollo/store';
 import { getJwtToken, logOut, updateUserInfo } from '../../auth';
 import { REACT_APP_API_URL } from '../../config';
+import { MemberType } from '../../enums/member.enum';
 import MenuList from '../admin/AdminMenuList';
 const drawerWidth = 280;
 
@@ -37,11 +38,11 @@ const withAdminLayout = (Component: ComponentType) => {
 			setLoading(false);
 		}, []);
 
-		// useEffect(() => {
-		// 	if (!loading && user.memberType !== MemberType.ADMIN) {
-		// 		router.push('/').then();
-		// 	}
-		// }, [loading, user, router]);
+		useEffect(() => {
+			if (!loading && user.memberType !== MemberType.ADMIN) {
+				router.push('/').then();
+			}
+		}, [loading, user, router]);
 
 		/** HANDLERS **/
 		const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -57,7 +58,7 @@ const withAdminLayout = (Component: ComponentType) => {
 			router.push('/').then();
 		};
 
-		// if (!user || user?.memberType !== MemberType.ADMIN) return null;
+		if (!user || user?.memberType !== MemberType.ADMIN) return null;
 
 		return (
 			<main id="pc-wrap" className="admin">

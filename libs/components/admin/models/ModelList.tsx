@@ -9,6 +9,7 @@ import React from 'react';
 import { REACT_APP_API_URL } from '../../../config';
 import { ModelStatus } from '../../../enums/model.enum';
 import { Model } from '../../../types/model/model';
+import { formatterStr } from '../../../utils';
 
 interface Data {
 	id: string;
@@ -145,6 +146,7 @@ export const ModelPanelList = (props: ModelPanelListType) => {
 									<TableRow hover key={model?._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
 										<TableCell align="left">{model._id}</TableCell>
 										<TableCell align="left" className={'name'}>
+										{model.modelStatus === ModelStatus.LIVE ?(
 											<Stack direction={'row'}>
 												<Link href={`/model/detail?id=${model?._id}`}>
 													<div>
@@ -155,8 +157,16 @@ export const ModelPanelList = (props: ModelPanelListType) => {
 													<div>{model.modelTitle}</div>
 												</Link>
 											</Stack>
+										) : (
+											<Stack direction={'row'}>
+													<div>
+														<Avatar alt="Remy Sharp" src={modelImage} sx={{ ml: '2px', mr: '10px' }} />
+													</div>
+													<div>{model.modelTitle}</div>
+											</Stack>
+										)}
 										</TableCell>
-										<TableCell align="center">{model.modelPrice}</TableCell>
+										<TableCell align="center">{formatterStr(model?.modelPrice)}</TableCell>
 										<TableCell align="center">{model.memberData?.memberNick}</TableCell>
 										<TableCell align="center">{model.modelLocation}</TableCell>
 										<TableCell align="center">{model.modelType}</TableCell>
@@ -175,7 +185,40 @@ export const ModelPanelList = (props: ModelPanelListType) => {
 												<Button className={'badge warning'}>{model.modelStatus}</Button>
 											)}
 
-											{model.modelStatus === ModelStatus.LIVE || model.modelStatus === ModelStatus.PENDING && (
+											{model.modelStatus === ModelStatus.PENDING && (
+												<>
+													<Button onClick={(e: any) => menuIconClickHandler(e, index)} className={'badge success'}>
+														{model.modelStatus}
+													</Button>
+
+													<Menu
+														className={'menu-modal'}
+														MenuListProps={{
+															'aria-labelledby': 'fade-button',
+														}}
+														anchorEl={anchorEl[index]}
+														open={Boolean(anchorEl[index])}
+														onClose={menuIconCloseHandler}
+														TransitionComponent={Fade}
+														sx={{ p: 1 }}
+													>
+														{Object.values(ModelStatus)
+															.filter((ele) => ele !== model.modelStatus)
+															.map((status: string) => (
+																<MenuItem
+																	onClick={() => updateModelHandler({ _id: model._id, modelStatus: status })}
+																	key={status}
+																>
+																	<Typography variant={'subtitle1'} component={'span'}>
+																		{status}
+																	</Typography>
+																</MenuItem>
+															))}
+													</Menu>
+												</>
+											)}
+
+											{model.modelStatus === ModelStatus.LIVE && (
 												<>
 													<Button onClick={(e: any) => menuIconClickHandler(e, index)} className={'badge success'}>
 														{model.modelStatus}

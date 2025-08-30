@@ -1,189 +1,112 @@
 import {
-	Button, Fade, Menu, MenuItem, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
+	Button,
+	Fade,
+	Menu,
+	MenuItem,
+	Stack,
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
+	Typography
 } from '@mui/material';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import React from 'react';
-
-interface Data {
-	category: string;
-	title: string;
-	writer: string;
-	date: string;
-	status: string;
-	id?: string;
-}
-
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-	if (b[orderBy] < a[orderBy]) {
-		return -1;
-	}
-	if (b[orderBy] > a[orderBy]) {
-		return 1;
-	}
-	return 0;
-}
-
-type Order = 'asc' | 'desc';
-
-interface HeadCell {
-	disablePadding: boolean;
-	id: keyof Data;
-	label: string;
-	numeric: boolean;
-}
-
-const headCells: readonly HeadCell[] = [
-	{
-		id: 'category',
-		numeric: true,
-		disablePadding: false,
-		label: 'CATEGORY',
-	},
-	{
-		id: 'title',
-		numeric: true,
-		disablePadding: false,
-		label: 'TITLE',
-	},
-
-	{
-		id: 'writer',
-		numeric: true,
-		disablePadding: false,
-		label: 'WRITER',
-	},
-	{
-		id: 'date',
-		numeric: true,
-		disablePadding: false,
-		label: 'DATE',
-	},
-	{
-		id: 'status',
-		numeric: false,
-		disablePadding: false,
-		label: 'STATUS',
-	},
-];
-
-interface EnhancedTableProps {
-	numSelected: number;
-	onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
-	onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
-	order: Order;
-	orderBy: string;
-	rowCount: number;
-}
-
-function EnhancedTableHead(props: EnhancedTableProps) {
-	const { onSelectAllClick } = props;
-
-	return (
-		<TableHead>
-			<TableRow>
-				{headCells.map((headCell) => (
-					<TableCell
-						key={headCell.id}
-						align={headCell.numeric ? 'left' : 'center'}
-						padding={headCell.disablePadding ? 'none' : 'normal'}
-					>
-						{headCell.label}
-					</TableCell>
-				))}
-			</TableRow>
-		</TableHead>
-	);
-}
+//@ts-ignore
+import { Faq } from '../../types/faq/faq';
 
 interface FaqArticlesPanelListType {
-	dense?: boolean;
-	membersData?: any;
-	searchMembers?: any;
-	anchorEl?: any;
-	handleMenuIconClick?: any;
-	handleMenuIconClose?: any;
-	generateMentorTypeHandle?: any;
+  dense?: boolean;
+  faqs: Faq[];
+  anchorEl: (HTMLElement | null)[];
+  handleMenuIconClick: (event: React.MouseEvent<HTMLElement>, index: number) => void;
+  handleMenuIconClose: () => void;
+  updateFaqHandler: (_id: string, faqStatus: string) => void;
 }
+
+
+const headCells = [
+	{ id: 'category', label: 'CATEGORY', numeric: true },
+	{ id: 'title', label: 'TITLE', numeric: true },
+	{ id: 'writer', label: 'WRITER', numeric: true },
+	{ id: 'date', label: 'DATE', numeric: true },
+	{ id: 'status', label: 'STATUS', numeric: false },
+];
 
 export const FaqArticlesPanelList = (props: FaqArticlesPanelListType) => {
 	const {
-		dense,
-		membersData,
-		searchMembers,
-		anchorEl,
-		handleMenuIconClick,
-		handleMenuIconClose,
-		generateMentorTypeHandle,
-	} = props;
-	const router = useRouter();
+	dense,
+	faqs,
+	anchorEl = [],
+	handleMenuIconClick,
+	handleMenuIconClose,
+	updateFaqHandler,
+} = props;
 
-	/** APOLLO REQUESTS **/
-	/** LIFECYCLES **/
-	/** HANDLERS **/
 
 	return (
 		<Stack>
 			<TableContainer>
 				<Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
-					{/*@ts-ignore*/}
-					<EnhancedTableHead />
+					<TableHead>
+						<TableRow>
+							{headCells.map((headCell) => (
+								<TableCell
+									key={headCell.id}
+									align={headCell.numeric ? 'left' : 'center'}
+								>
+									{headCell.label}
+								</TableCell>
+							))}
+							<TableCell align="left">EMAIL</TableCell>
+							<TableCell align="center">USER TYPE</TableCell>
+						</TableRow>
+					</TableHead>
+
 					<TableBody>
-						{[1, 2, 3, 4, 5].map((ele: any, index: number) => {
-							const member_image = '/img/profile/defaultUser.svg';
-
-							let status_class_name = '';
-
-							return (
-								<TableRow hover key={'member._id'} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-									<TableCell align="left">mb id</TableCell>
-									<TableCell align="left">member.mb_full_name</TableCell>
-									<TableCell align="left" className={'name'}>
-										<Stack direction={'row'}>
-											<Link href={`/_admin/users/detail?mb_id=${'member._id'}`}>
-												<div>
-													<Avatar alt="Remy Sharp" src={member_image} sx={{ ml: '2px', mr: '10px' }} />
-												</div>
-											</Link>
-											<Link href={`/_admin/users/detail?mb_id=${'member._id'}`}>
-												<div>member.mb_nick</div>
-											</Link>
-										</Stack>
-									</TableCell>
-									<TableCell align="left">member.mb_phone</TableCell>
+						{faqs && faqs.length > 0 ? (
+							faqs.map((faq, index) => (
+								<TableRow hover key={faq._id ?? index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+									<TableCell align="left">{faq.faqCategory}</TableCell>
+									<TableCell align="left">{faq.subject}</TableCell>
+									<TableCell align="left">{faq.writerData?.memberNick ?? 'N/A'}</TableCell>
+									<TableCell align="left">{new Date(faq.createdAt).toLocaleDateString()}</TableCell>
 									<TableCell align="center">
-										<Button onClick={(e: any) => handleMenuIconClick(e, index)} className={'badge success'}>
-											member.mb_type
+										<Button className={`badge ${faq.answer ? 'success' : 'pending'}`}>
+											{faq.answer ? 'Answered' : 'Pending'}
 										</Button>
-
+									</TableCell>
+									<TableCell align="left">{faq.writerData?.memberEmail ?? '-'}</TableCell>
+									<TableCell align="center">
+										<Button onClick={(e) => handleMenuIconClick(e, index)} className={'badge success'}>
+											{faq?.faqStatus ?? 'Blocked'}
+										</Button>
 										<Menu
-											className={'menu-modal'}
-											MenuListProps={{
-												'aria-labelledby': 'fade-button',
-											}}
-											anchorEl={anchorEl[index]}
-											open={Boolean(anchorEl[index])}
-											onClose={handleMenuIconClose}
-											TransitionComponent={Fade}
-											sx={{ p: 1 }}
+										className="menu-modal"
+										MenuListProps={{ 'aria-labelledby': 'fade-button' }}
+										anchorEl={anchorEl[index]}
+										open={Boolean(anchorEl[index])}
+										onClose={handleMenuIconClose}
+										TransitionComponent={Fade}
 										>
-											<MenuItem onClick={(e) => generateMentorTypeHandle('member._id', 'mentor', 'originate')}>
-												<Typography variant={'subtitle1'} component={'span'}>
-													MENTOR
-												</Typography>
-											</MenuItem>
-											<MenuItem onClick={(e) => generateMentorTypeHandle('member._id', 'user', 'remove')}>
-												<Typography variant={'subtitle1'} component={'span'}>
-													USER
-												</Typography>
-											</MenuItem>
+										<MenuItem onClick={() => updateFaqHandler(faq._id, 'ACTIVE')}>
+											<Typography variant="subtitle1">ACTIVE</Typography>
+										</MenuItem>
+										<MenuItem onClick={() => updateFaqHandler(faq._id, 'BLOCKED')}>
+											<Typography variant="subtitle1">BLOCK</Typography>
+										</MenuItem>
 										</Menu>
 									</TableCell>
 								</TableRow>
-							);
-						})}
+							))
+						) : (
+							<TableRow>
+								<TableCell colSpan={8} align="center">
+									No FAQs found.
+								</TableCell>
+							</TableRow>
+						)}
 					</TableBody>
 				</Table>
 			</TableContainer>

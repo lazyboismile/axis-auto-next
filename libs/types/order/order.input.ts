@@ -9,7 +9,7 @@ export interface OrderInput {
 }
 
 interface OISearch {
-    orderStatus: OrderStatus;
+    orderStatus?: OrderStatus;
 }
 
 export interface OrderInquiry {

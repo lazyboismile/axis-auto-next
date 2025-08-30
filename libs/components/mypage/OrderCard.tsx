@@ -1,5 +1,4 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import ModeIcon from '@mui/icons-material/Mode';
 import { Menu, MenuItem, Stack, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { useRouter } from 'next/router';
@@ -12,17 +11,23 @@ import { formatterStr } from '../../utils';
 
 interface OrderCardProps {
 	order: Order;
-	deleteOrderHandler?: any;
+	cancelOrderHandler?: any;
 	memberPage?: boolean;
 	updateOrderHandler?: any;
+	userType?: 'AGENT' | 'USER';
 }
 
 export const OrderCard = (props: OrderCardProps) => {
-	const { order, deleteOrderHandler, memberPage, updateOrderHandler} = props;
+	const { order, cancelOrderHandler, memberPage, updateOrderHandler, userType} = props;
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
+	const isAgent = userType === 'AGENT';
+	const email = isAgent 
+	? order?.buyerData?.memberEmail 
+	: order?.agentData?.memberEmail;
+
 
 	/** HANDLERS **/
 	const pushEditOrder = async (id: string) => {
@@ -55,11 +60,19 @@ export const OrderCard = (props: OrderCardProps) => {
 	} else
 		return (
 			<Stack className="order-card-box">
-				<Stack className="image-box" onClick={() => pushOrderDetail(order?._id)}>
-					<img src={'/img/banner/header1.svg'} alt="" />
-                    {/* /** `${process.env.REACT_APP_API_URL}/${order.modelData?.modelImages[0]}` */ }
+				<Stack className="image-box">
+					 {/* onClick={() => pushOrderDetail(order?._id)} */}
+					<img
+						src={
+							order.modelData?.modelImages?.[0]
+							? `${process.env.REACT_APP_API_URL}/${order.modelData.modelImages[0]}`
+							: "/img/banner/header1.svg"
+						}
+						alt="model"
+					/>
 				</Stack>
-				<Stack className="information-box" onClick={() => pushOrderDetail(order?._id)}>
+				<Stack className="information-box" >
+					{/* onClick={() => pushOrderDetail(order?._id)} */}
 					<Typography className="name">{order.modelData?.modelTitle ?? 'N/A'}</Typography>
 					<Typography className="address">{order.modelData?.modelAddress  ?? 'N/A'}</Typography>
 					<Typography className="price">
@@ -116,21 +129,82 @@ export const OrderCard = (props: OrderCardProps) => {
 				)}
 
 				<Stack className="email-box">
-					<Typography className="email">
-                        {order?.agentData?.memberEmail ?? 'N/A'}
-                    </Typography>
+				<Typography className="email">{email ?? 'N/A'}</Typography>
 				</Stack>
-				{!memberPage && order.orderStatus === OrderStatus.PENDING && (
-					<Stack className="action-box">
-						<IconButton className="icon-button" onClick={() => pushEditOrder(order._id)}>
-							<ModeIcon className="buttons" />
-						</IconButton>
-						<IconButton className="icon-button" onClick={() => {
+				{!memberPage && 
+					(order.orderStatus === OrderStatus.PENDING ||
+					order.orderStatus === OrderStatus.PAID ||
+					order.orderStatus === OrderStatus.PROCESSING) && (
+						<Stack className="action-box">
+						{order.orderStatus === OrderStatus.PENDING && (
+							<>
+								<MenuItem
+									disableRipple
+									onClick={() => {
 										handleClose();
-										updateOrderHandler(OrderStatus.CANCELLED, order?._id);
-									}}>
-							<DeleteIcon className="buttons" />
-						</IconButton>
+										updateOrderHandler(OrderStatus.PAID, order?._id);
+									}}
+								>
+									PENDING
+								</MenuItem>
+
+								<IconButton
+								className="icon-button"
+								onClick={() => {
+									handleClose();
+									updateOrderHandler(OrderStatus.CANCELLED, order?._id);
+								}}
+								>
+								<DeleteIcon className="buttons" />
+								</IconButton>
+							</>
+						)}
+						{order.orderStatus === OrderStatus.PAID && (
+							<>
+								<MenuItem
+									disableRipple
+									onClick={() => {
+										handleClose();
+										updateOrderHandler(OrderStatus.PROCESSING, order?._id);
+									}}
+								>
+									PAID
+								</MenuItem>
+
+								<IconButton
+								className="icon-button"
+								onClick={() => {
+									handleClose();
+									updateOrderHandler(OrderStatus.CANCELLED, order?._id);
+								}}
+								>
+								<DeleteIcon className="buttons" />
+								</IconButton>
+							</>
+						)}
+						{order.orderStatus === OrderStatus.PROCESSING && (
+							<>
+									<MenuItem
+									disableRipple
+									onClick={() => {
+										handleClose();
+										updateOrderHandler(OrderStatus.COMPLETED, order?._id);
+									}}
+								>
+									PROCESSING
+								</MenuItem>
+
+								<IconButton
+								className="icon-button"
+								onClick={() => {
+									handleClose();
+									updateOrderHandler(OrderStatus.CANCELLED, order?._id);
+								}}
+								>
+								<DeleteIcon className="buttons" />
+								</IconButton>
+							</>
+						)}
 					</Stack>
 				)}
 			</Stack>

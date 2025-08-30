@@ -1,3 +1,4 @@
+import { useMutation, useQuery } from '@apollo/client';
 import { TabContext } from '@mui/lab';
 import { Box, List, ListItem, Stack } from '@mui/material';
 import Divider from '@mui/material/Divider';
@@ -7,10 +8,13 @@ import TablePagination from '@mui/material/TablePagination';
 import Typography from '@mui/material/Typography';
 import type { NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
+import { REMOVE_MODEL_BY_ADMIN, UPDATE_MODEL_BY_ADMIN } from '../../../apollo/admin/mutation';
+import { GET_ALL_MODELS_BY_ADMIN } from '../../../apollo/admin/query';
 import { ModelPanelList } from '../../../libs/components/admin/models/ModelList';
 import withAdminLayout from '../../../libs/components/layout/LayoutAdmin';
 import { ModelLocation, ModelStatus } from '../../../libs/enums/model.enum';
 import { sweetConfirmAlert, sweetErrorHandling } from '../../../libs/sweetAlert';
+import { T } from '../../../libs/types/common';
 import { Model } from '../../../libs/types/model/model';
 import { AllModelsInquiry } from '../../../libs/types/model/model.input';
 import { ModelUpdate } from '../../../libs/types/model/model.update';
@@ -27,18 +31,40 @@ const AdminModels: NextPage = ({ initialInquiry, ...props }: any) => {
 
 	/** APOLLO REQUESTS **/
 
+	const [updateModel] = useMutation(UPDATE_MODEL_BY_ADMIN);
+	const [removeModel] = useMutation(REMOVE_MODEL_BY_ADMIN);
+
+	const {
+		loading: getAllModelsByAdminLoading,
+		data: getAllModelsByAdminData,
+		error: getAllModelsByAdminError,
+		refetch: getAllModelsByAdminRefetch,
+	} = useQuery(GET_ALL_MODELS_BY_ADMIN, {
+		fetchPolicy: "network-only",
+		variables: { input: modelsInquiry },
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setModels(data?.getAllModelsByAdmin?.list);
+			setModelsTotal(data?.getAllModelsByAdmin?.metaCounter[0]?.total)
+		}
+	});
+
 	/** LIFECYCLES **/
-	useEffect(() => {}, [modelsInquiry]);
+	useEffect(() => {
+		getAllModelsByAdminRefetch();
+	}, [modelsInquiry]);
 
 	/** HANDLERS **/
 	const changePageHandler = async (event: unknown, newPage: number) => {
 		modelsInquiry.page = newPage + 1;
+		await getAllModelsByAdminRefetch({ input: modelsInquiry });
 		setModelsInquiry({ ...modelsInquiry });
 	};
 
 	const changeRowsPerPageHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
 		modelsInquiry.limit = parseInt(event.target.value, 10);
 		modelsInquiry.page = 1;
+		await getAllModelsByAdminRefetch({ input: modelsInquiry });
 		setModelsInquiry({ ...modelsInquiry });
 	};
 
@@ -80,6 +106,12 @@ const AdminModels: NextPage = ({ initialInquiry, ...props }: any) => {
 	const removeModelHandler = async (id: string) => {
 		try {
 			if (await sweetConfirmAlert('Are you sure to remove?')) {
+				await removeModel({
+					variables: {
+						input: id ,
+					},
+				});
+				await getAllModelsByAdminRefetch({ input: modelsInquiry });
 			}
 			menuIconCloseHandler();
 		} catch (err: any) {
@@ -101,6 +133,7 @@ const AdminModels: NextPage = ({ initialInquiry, ...props }: any) => {
 						modelLocationList: [newValue as ModelLocation],
 					},
 				});
+				await getAllModelsByAdminRefetch({ input: modelsInquiry });
 			} else {
 				delete modelsInquiry?.search?.modelLocationList;
 				setModelsInquiry({ ...modelsInquiry });
@@ -113,7 +146,13 @@ const AdminModels: NextPage = ({ initialInquiry, ...props }: any) => {
 	const updateModelHandler = async (updateData: ModelUpdate) => {
 		try {
 			console.log('+updateData: ', updateData);
+			await updateModel({
+				variables: {
+					input: updateData,
+				},
+			});
 			menuIconCloseHandler();
+			await getAllModelsByAdminRefetch({ input: modelsInquiry });
 		} catch (err: any) {
 			menuIconCloseHandler();
 			sweetErrorHandling(err).then();
@@ -172,11 +211,16 @@ const AdminModels: NextPage = ({ initialInquiry, ...props }: any) => {
 									<MenuItem value={'ALL'} onClick={() => searchTypeHandler('ALL')}>
 										ALL
 									</MenuItem>
-									{Object.values(ModelLocation).map((location: string) => (
-										<MenuItem value={location} onClick={() => searchTypeHandler(location)} key={location}>
+									{Object.values(ModelLocation).map((location) => (
+										<MenuItem
+											key={location}
+											value={location as ModelLocation}
+											onClick={() => searchTypeHandler(location as ModelLocation)} 
+										>
 											{location}
 										</MenuItem>
 									))}
+
 								</Select>
 							</Stack>
 							<Divider />

@@ -10,13 +10,13 @@ import { NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import SwiperCore, { Autoplay, Navigation, Pagination } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { userVar } from '../../apollo/store';
-import { CREATE_COMMENT, LIKE_TARGET_MODEL } from '../../apollo/user/mutation';
+import { CREATE_COMMENT, CREATE_ORDER, LIKE_TARGET_MODEL } from '../../apollo/user/mutation';
 import { GET_COMMENTS, GET_MODEL, GET_MODELS } from '../../apollo/user/query';
 import ModelBigCard from '../../libs/components/common/ModelBigCard';
 import withLayoutFull from '../../libs/components/layout/LayoutFull';
@@ -60,6 +60,7 @@ const ModelDetail: NextPage = ({ initialComment, ...props }: any) => {
 	/** APOLLO REQUESTS **/
 	const [likeTargetModel] = useMutation(LIKE_TARGET_MODEL);
 	const [createComment] = useMutation(CREATE_COMMENT);
+	const [createOrder] = useMutation(CREATE_ORDER);
 
 	const {
 		loading: getModelLoading,
@@ -181,26 +182,24 @@ const ModelDetail: NextPage = ({ initialComment, ...props }: any) => {
 		setCommentInquiry({ ...commentInquiry });
 	};
 
-	const doOrder = useCallback(async () => {
-		if (!modelId) {
-			console.error("❌ No modelId set!");
-			return;
+	const doOrder = async (user: T, id: string) => {
+		try {
+			if(!id) return;
+			if(!user._id) throw new Error(Message.NOT_AUTHENTICATED);
+			
+			await createOrder({
+			variables: {
+					input: { modelId: id },
+				},
+			});
+
+			await sweetTopSmallSuccessAlert('success', 800);
+			await router.push('/mypage?category=myOrders');
+		} catch (err: any) {
+			console.log("ERROR, doOrder: ", err.message);
+			sweetMixinErrorAlert(err.message).then();
 		}
-
-		console.log("✅ Sending modelId to backend:", modelId);
-
-		// later replace with mutation:
-		// try {
-		//   const res = await createOrder({
-		//     variables: { input: { modelId } },
-		//   });
-		//   if (res.data?.createOrder?._id) {
-		//     await router.push("/mypage?category=myOrders");
-		//   }
-		// } catch (err: any) {
-		//   await sweetMixinErrorAlert(err.message || "Failed to create order.");
-		// }
-	}, [modelId, router]);
+	}
 
 	const createCommentHandler = async () => {
 		try {
@@ -425,7 +424,7 @@ const ModelDetail: NextPage = ({ initialComment, ...props }: any) => {
 												</Box>
 												<Box component={'div'} className={'info'}>
 													<Typography className={'title'}>Location</Typography>
-													<Typography className={'data'}>
+													<Typography className={'data-location'}>
 														{model?.memberData?.memberAddress ?? 'N/A'}
 													</Typography>
 												</Box>
@@ -600,7 +599,7 @@ const ModelDetail: NextPage = ({ initialComment, ...props }: any) => {
 										</svg>
 									</Button>
 
-									<Button className="bid-message" onClick={doOrder}>
+									<Button className="bid-message" onClick={() => model?._id && doOrder(user, model._id)}>
 										<Typography className="title">Make a Bid</Typography>
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
@@ -629,7 +628,7 @@ const ModelDetail: NextPage = ({ initialComment, ...props }: any) => {
 							<Stack className={'similar-models-config'}>
 								<Stack className={'title-pagination-box'}>
 									<Stack className={'title-box'}>
-										<Typography className={'main-title'}>Destination Model</Typography>
+										<Typography className={'main-title'}>{model?.modelBrand} Models</Typography>
 										<Typography className={'sub-title'}>Aliquam lacinia diam quis lacus euismod</Typography>
 									</Stack>
 									<Stack className={'pagination-box'}>

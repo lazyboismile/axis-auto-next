@@ -5,7 +5,7 @@ import useDeviceDetect from '../../hooks/useDeviceDetect';
 
 const HeaderFilter = () => {
   const device = useDeviceDetect();
-  const { t } = useTranslation('common');
+  const { t, i18n } = useTranslation('common');
 
   const typeUrl = (type: string) => {
     const query = {
@@ -23,14 +23,14 @@ const HeaderFilter = () => {
   };
 
   if (device === 'mobile') {
-    return <div>HEADER FILTER MOBILE</div>;
+    return <div>{t('headerFilter.mobileTitle')}</div>;
   }
 
   return (
     <Stack className="search-box">
       <Stack className="select-title">
         <Box component="div" className="title">
-          <span>Select a Body Style</span>
+          <span>{t('headerFilter.title')}</span>
         </Box>
       </Stack>
 
@@ -38,42 +38,42 @@ const HeaderFilter = () => {
         <Link href={typeUrl("SEDAN")}>
           <Box className="advanced-filter">
             <img src="/img/banner/types/sedan.svg" alt="Sedan" />
-            <span>Sedan</span>
+            <span>{t('headerFilter.types.sedan')}</span>
           </Box>
         </Link>
 
         <Link href={typeUrl("COUPE")}>
           <Box className="advanced-filter">
             <img src="/img/banner/types/coupe.svg" alt="Coupe" />
-            <span>Coupe</span>
+            <span>{t('headerFilter.types.coupe')}</span>
           </Box>
         </Link>
 
         <Link href={typeUrl("SUV")}>
           <Box className="advanced-filter">
             <img src="/img/banner/types/suv.svg" alt="SUV" />
-            <span>SUV</span>
+            <span>{t('headerFilter.types.suv')}</span>
           </Box>
         </Link>
 
         <Link href={typeUrl("TRUCK")}>
           <Box className="advanced-filter">
             <img src="/img/banner/types/truck.svg" alt="Truck" />
-            <span>Truck</span>
+            <span>{t('headerFilter.types.truck')}</span>
           </Box>
         </Link>
 
         <Link href={typeUrl("HATCHBACK")}>
           <Box className="advanced-filter">
             <img src="/img/banner/types/hat.svg" alt="Hatchback" />
-            <span>Hatchback</span>
+            <span>{t('headerFilter.types.hatchback')}</span>
           </Box>
         </Link>
 
         <Link href={typeUrl("CONVERTIBLE")}>
           <Box className="advanced-filter">
             <img src="/img/banner/types/mini.svg" alt="Convertible" />
-            <span>Convertible</span>
+            <span>{t('headerFilter.types.convertible')}</span>
           </Box>
         </Link>
       </Stack>

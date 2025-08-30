@@ -243,6 +243,30 @@ export const LIKE_TARGET_MODEL = gql`
 `;
 
 /**************************
+ *      ORDER     *
+ *************************/
+
+export const UPDATE_ORDER = gql`
+    mutation UpdateOrder($input: OrderUpdate!) {
+        updateOrder(input: $input) {
+            _id
+            buyerId
+            modelId
+            agentId
+            orderStatus
+            orderPrice
+            paymentMethod
+            isPaid
+            soldAt
+            paidAt
+            processedAt
+            createdAt
+            updatedAt
+        }
+    }
+`;
+
+/**************************
  *      BOARD-ARTICLE     *
  *************************/
 
@@ -403,4 +427,57 @@ export const UNSUBSCRIBE = gql`
 			updatedAt
 		}
 	}
+`;
+
+/**************************
+ *         NOTIFICATION        *
+ *************************/
+
+export const READ_ALL_NOTIFICATIONS = gql`
+    mutation ReadAllNotifications {
+        readAllNotifications
+    }
+`;
+
+export const DELETE_ALL_NOTIFICATIONS = gql`
+    mutation DeleteAllNotifications {
+        deleteAllNotifications
+    }
+`;
+
+/**************************
+ *         NOTICE        *
+ *************************/
+
+export const CREATE_NOTICE = gql`
+    mutation CreateNotice($input: NoticeInput!) {
+        createNotice(input: $input) {
+            _id
+            noticeCategory
+            noticeStatus
+            noticeTitle
+            noticeContent
+            memberId
+            event
+        }
+    }
+`;
+
+export const READ_NOTICE = gql`
+    mutation ReadNotification($input: String!) {
+        readNotification(notificationId: $input) {
+            _id
+            notificationType
+            notificationStatus
+            notificationGroup
+            notificationTitle
+            notificationDesc
+            authorId
+            receiverId
+            modelId
+            articleId
+            createdAt
+            updatedAt
+        }
+    }
 `;

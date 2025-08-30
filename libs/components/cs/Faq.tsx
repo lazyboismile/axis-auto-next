@@ -1,3 +1,4 @@
+import { useQuery } from '@apollo/client';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import { AccordionDetails, Box, Stack, Typography } from '@mui/material';
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
@@ -5,7 +6,9 @@ import MuiAccordionSummary, { AccordionSummaryProps } from '@mui/material/Accord
 import { styled } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import React, { SyntheticEvent, useState } from 'react';
+import { GET_FAQS } from '../../../apollo/user/query';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
+import { T } from '../../types/common';
 import { Faq } from '../../types/faq/faq';
 import { FaqsInquiry } from '../../types/faq/faq.input';
 import Inquiry from './Inquiry';
@@ -46,16 +49,51 @@ const Faq: React.FC<FaqProps> = ({ initialInput = defaultInput }) => {
   const [expanded, setExpanded] = useState<string | false>('panel1');
   const [faqs, setFaqs] = useState<Faq[]>([]);
   const [total, setTotal] = useState<number>(0);
+  const [faqsInquiry, setFaqsInquiry] = useState<FaqsInquiry>(defaultInput);
 
 	/** APOLLO REQUESTS **/
+
+  const {
+		loading: getFaqsLoading,
+		data: getFaqsData,
+		error: getFaqsError,
+		refetch: getFaqsRefetch,
+	} = useQuery(GET_FAQS, {
+		fetchPolicy: "network-only",
+		variables: { input: faqsInquiry },
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setFaqs(data?.getFaqs?.list);
+			setTotal(data?.getFaqs?.metaCounter[0]?.total ?? 0);
+		}
+	});
 
 	/** LIFECYCLES **/
 
 	/** HANDLERS **/
 
-  const changeCategoryHandler = (category: string) => {
-    setCategory(category);
-  };
+  const changeCategoryHandler = (newCategory: string) => {
+  setCategory(newCategory);
+
+  const formattedCategory = newCategory.toUpperCase(); 
+
+  //@ts-ignore
+  setFaqsInquiry(prev => ({
+    ...prev,
+    page: 1,
+    search: { faqCategory: formattedCategory },
+  }));
+
+  getFaqsRefetch({
+    input: {
+      ...faqsInquiry,
+      page: 1,
+      search: { faqCategory: formattedCategory },
+    }
+  });
+};
+
+
 
   const handleChange = (panel: string) => (event: SyntheticEvent, newExpanded: boolean) => {
     setExpanded(newExpanded ? panel : false);
@@ -141,7 +179,7 @@ const Faq: React.FC<FaqProps> = ({ initialInput = defaultInput }) => {
                     <Typography className="badge" variant={'h4'} color={'primary'}>
                       A
                     </Typography>
-                    <Typography>{faq?.content}</Typography>
+                    <Typography>{faq?.content ?? "Answer doesn't exist right now"}</Typography>
                   </Stack>
                 </AccordionDetails>
               </Accordion>
@@ -162,7 +200,7 @@ const defaultInput: FaqsInquiry = {
   sort: 'createdAt', //@ts-ignore
   direction: 'DESC',
   search: { //@ts-ignore
-    faqCategory: '',
+    faqCategory: 'MODEL',
   },
 };
 

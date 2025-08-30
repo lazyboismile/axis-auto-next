@@ -39,7 +39,7 @@ const PopularModelCard = (props: PopularModelCardProps) => {
       >
         {model?.modelViews >= topModelRank && (
           <div className="status">
-            <span>Most Searched</span>
+            <span>Popular</span>
           </div>
         )}
         <div className="view-like-box">

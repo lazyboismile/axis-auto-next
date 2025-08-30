@@ -6,6 +6,7 @@ import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import createUploadLink from 'apollo-upload-client/public/createUploadLink.js';
 import { useMemo } from 'react';
 import { getJwtToken } from '../libs/auth';
+import { sweetErrorAlert } from '../libs/sweetAlert';
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 
 function getHeaders() {
@@ -59,9 +60,10 @@ function createIsomorphicLink() {
 
         const errorLink = onError(({ graphQLErrors, networkError, response }) => {
             if (graphQLErrors) {
-                graphQLErrors.map(({ message, locations, path, extensions }) =>
-                    console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`),
-                );
+                graphQLErrors.map(({ message, locations, path, extensions }) => {
+                    console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
+                    if (!message.includes('input')) sweetErrorAlert(message);
+                });
             }
             if (networkError) console.log(`[Network error]: ${networkError}`);
             // @ts-ignore

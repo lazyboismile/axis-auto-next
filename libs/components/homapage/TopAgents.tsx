@@ -4,6 +4,7 @@ import { Box, Stack } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Autoplay, Navigation, Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { GET_AGENTS } from '../../../apollo/user/query';
@@ -20,6 +21,7 @@ interface TopAgentsProps {
 const TopAgents = (props: TopAgentsProps) => { 
 	const { initialInput } = props;
 	const device = useDeviceDetect();
+	const { t, i18n } = useTranslation('common');
 	const router = useRouter();
 	const [topAgents, setTopAgents] = useState<Member[]>([]);
 
@@ -46,7 +48,7 @@ const TopAgents = (props: TopAgentsProps) => {
 			<Stack className={'top-agents'}>
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
-						<span>Top Agents</span>
+						<span>{t("topAgents")}</span>
 					</Stack>
 					<Stack className={'wrapper'}>
 						<Swiper
@@ -74,12 +76,12 @@ const TopAgents = (props: TopAgentsProps) => {
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
 						<Box component={'div'} className={'left'}>
-							<span>Top Agents</span>
+							<span>{t("topAgents")}</span>
 						</Box>
 						<Box component={'div'} className={'right'}>
 							<Link href={'/agent'}>
 								<div className={'more-box'}>
-									<span>See All Agents</span>
+									<span>{t("seeAllAgents")}</span>
 									<img src="/img/icons/rightup.svg" alt="" />
 								</div>
 							</Link>

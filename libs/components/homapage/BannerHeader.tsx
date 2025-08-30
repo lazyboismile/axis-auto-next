@@ -5,6 +5,7 @@ import useDeviceDetect from '../../hooks/useDeviceDetect';
 
 const images = [
   '/img/banner/header1.svg',
+  '/img/banner/header5.jpg',
   '/img/banner/aboutBanner.jpg'
 ];
 

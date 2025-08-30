@@ -7,6 +7,8 @@
 @import "/scss/pc/model/model.scss";
 @import "/scss/pc/model/detail.scss";
 
+@import "/scss/pc/order/detail.scss";
+
 @import "/scss/pc/agent/agent.scss";
 @import "/scss/pc/agent/detail.scss";
 
@@ -80,9 +82,10 @@ body::-webkit-scrollbar {
 					}
 					.router-box {
 						position: relative;
-						width: 617px;
+						width: auto;
 						display: flex;
 						flex-direction: row;
+						gap: 7px;
 						justify-content: space-between;
 						span {
 							position: relative;
@@ -210,10 +213,11 @@ body::-webkit-scrollbar {
 					}
 					.router-box {
 						position: relative;
-						width: 617px;
+						width: auto;
 						display: flex;
 						flex-direction: row;
 						justify-content: space-between;
+						gap: 7px;
 						span {
 							position: relative;
 							top: -20%;

@@ -11,6 +11,7 @@ export interface FaqInput {
 
 interface FISearch {
     faqCategory?: FaqCategory;
+    faqStatus?: FaqStatus;
     text?: string;
 
     memberId?: string;

@@ -3,6 +3,7 @@ import EastIcon from '@mui/icons-material/East';
 import WestIcon from '@mui/icons-material/West';
 import { Box, Stack } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Autoplay, Navigation, Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { GET_MODELS } from '../../../apollo/user/query';
@@ -18,6 +19,7 @@ interface PopularModelsProps {
 
 const PopularModels = (props: PopularModelsProps) => {
 	const { initialInput } = props;
+	const { t, i18n } = useTranslation('common');
 	const device = useDeviceDetect();
 	const [popularModels, setPopularModels] = useState<Model[]>([]);
 	const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -68,7 +70,7 @@ const PopularModels = (props: PopularModelsProps) => {
 			<Stack className={'popular-models'}>
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
-						<span>The Most Searched Cars</span>
+						<span>{t("theMostSearchedCars")}</span>
 					</Stack>
 					<Stack className={'card-box'}>
 						{popularModels.length === 0 ? (
@@ -98,7 +100,7 @@ const PopularModels = (props: PopularModelsProps) => {
 			<Stack className={'container'}>
 				<Stack className={'card-box-title'}>
 					<Box component={'div'} className={'title'}>
-						<p>The Most Searched Cars</p>
+						<p>{t("theMostSearchedCars")}</p>
 					</Box>
 					<Box component={'div'} className={'title-search'}>
 						{['ALL','SEDAN', 'SUV', 'CONVERTIBLE', 'HATCHBACK'].map((category) => (

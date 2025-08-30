@@ -3,6 +3,7 @@ import EastIcon from '@mui/icons-material/East';
 import WestIcon from '@mui/icons-material/West';
 import { Box, Stack } from '@mui/material';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Autoplay, Navigation, Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { GET_MODELS } from '../../../apollo/user/query';
@@ -18,6 +19,7 @@ interface TopModelsProps {
 
 const TopModels = (props: TopModelsProps) => {
 	const { initialInput } = props;
+	const { t, i18n } = useTranslation('common');
 	const device = useDeviceDetect();
 	const [topModels, setTopModels] = useState<Model[]>([]);
 
@@ -48,7 +50,7 @@ const TopModels = (props: TopModelsProps) => {
 			<Stack className={'top-models'}>
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
-						<span>Recommended Cars For You</span>
+						<span>{t("recommendedCarsForYou")}</span>
 					</Stack>
 					<Stack className={'card-box'}>
 						{topModels.length === 0 ? (
@@ -80,7 +82,7 @@ const TopModels = (props: TopModelsProps) => {
 				<Stack className={'container'}>
 					<Stack className={'card-box-title'}>
 						<Box component={'div'} className={'title'}>
-							<p>Recommended Cars For You</p>
+							<p>{t("recommendedCarsForYou")}</p>
 						</Box>
 					</Stack>
 					<Stack className="card-box">
