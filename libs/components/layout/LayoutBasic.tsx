@@ -11,6 +11,7 @@ import 'swiper/css/pagination';
 import { userVar } from '../../../apollo/store';
 import { getJwtToken, updateUserInfo } from '../../auth';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
+import Chat from '../chat';
 import Footer from '../Footer';
 import Top from '../Top';
 import TopWhite from '../TopWhite';
@@ -152,7 +153,7 @@ const withLayoutBasic = (Component: any) => {
 							<Component {...props} />
 						</Stack>
 
-						{/* {user?._id && <Chat />} */}
+						{user?._id && <Chat />}
 
 						<Stack id={'footer'}>
 							<Footer />

@@ -672,6 +672,128 @@ body::-webkit-scrollbar {
 			}
 		}
 	}
+
+	.chatting {
+		.chat-button {
+			position: fixed;
+			bottom: 90px;
+			right: 30px;
+			width: 55px;
+			height: 55px;
+			border-radius: 50%;
+			border: none;
+			background: linear-gradient(135deg, #33c1c1, #3c96cf);
+			color: #fff;
+			font-size: 24px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0px 6px 15px rgba(0,0,0,0.3);
+			transition: transform 0.3s;
+			&:hover { transform: scale(1.15); cursor: pointer; }
+		}
+
+		.chat-frame {
+			position: fixed;
+			right: -380px;
+			bottom: 150px;
+			width: 380px;
+			height: 500px;
+			display: flex;
+			flex-direction: column;
+			border-radius: 30px;
+			background: #f0f4f8;
+			box-shadow: 0px 8px 20px rgba(0,0,0,0.25);
+			transition: right 0.7s ease-in-out;
+			&.open { right: 10px; }
+
+			.chat-top {
+			height: 70px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 20px;
+			font-size: 22px;
+			font-weight: 600;
+			color: #333;
+			border-bottom: 1px solid rgba(200,200,200,0.5);
+			}
+
+			.chat-content {
+			flex: 1;
+			padding: 15px;
+			overflow-y: auto;
+			.chat-main {
+				.welcome-box { display: flex; justify-content: center; margin-bottom: 10px; }
+				.welcome {
+				background: #9fa7ac;
+				color: #fff;
+				padding: 8px 15px;
+				border-radius: 15px;
+				}
+
+				.msg-row {
+				display: flex;
+				align-items: flex-end;
+				margin: 5px 0;
+
+				&.mine { justify-content: flex-end; }
+				&.other { justify-content: flex-start; }
+
+				.chat-avatar {
+					width: 35px;
+					height: 35px;
+					margin-right: 10px;
+					cursor: pointer;
+					transition: transform 0.2s;
+					&:hover { transform: scale(1.1); }
+				}
+
+				.msg-left, .msg-right {
+					padding: 10px 15px;
+					border-radius: 18px;
+					max-width: 70%;
+					word-break: break-word;
+				}
+
+				.msg-left { background: #3c96cf; color: #fff; border-radius: 18px 18px 18px 0; }
+				.msg-right { background: #d0ece8; border-radius: 18px 18px 0 18px; }
+				}
+			}
+			}
+
+			.chat-bott {
+			height: 70px;
+			display: flex;
+			align-items: center;
+			padding: 0 15px;
+			border-top: 1px solid rgba(200,200,200,0.5);
+
+			input {
+				flex: 1;
+				padding: 12px 15px;
+				border-radius: 25px;
+				border: 1px solid #ddd;
+				outline: none;
+				font-size: 14px;
+			}
+
+			.send-msg-btn {
+				width: 45px;
+				height: 45px;
+				margin-left: 10px;
+				border-radius: 50%;
+				border: none;
+				background: #33c1c1;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				transition: transform 0.2s;
+				&:hover { transform: scale(1.1); cursor: pointer; }
+			}
+			}
+		}
+	}
 }
 
 .MuiPaper-root.MuiMenu-paper {
