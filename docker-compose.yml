@@ -4,9 +4,9 @@ services:
     restart: always
     image: node:20.10.0
     ports:
-      - 5000:4000
+      - 5000:3011
     environment:
-      - PORT=4000
+      - PORT=3011
     volumes:
       - ./:/usr/src/axis-auto-next
     working_dir: /usr/src/axis-auto-next
