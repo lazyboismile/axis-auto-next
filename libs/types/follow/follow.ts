@@ -1,5 +1,5 @@
 import { Member } from '../member/member';
-import { MeLiked, TotalCounter } from '../model/model.update';
+import { MeLiked, TotalCounter } from '../model/model';
 
 export interface MeFollowed {
     followingId: string;
