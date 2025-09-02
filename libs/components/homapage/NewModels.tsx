@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import EastIcon from '@mui/icons-material/East';
 import WestIcon from '@mui/icons-material/West';
 import { Box, Stack } from '@mui/material';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Autoplay, Navigation, Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -49,7 +49,7 @@ const NewModels = (props: NewModelsProps) => {
 					<Stack className={'info-box'}>
 						<span>{t("upcomingCars")}</span>
 					</Stack>
-					<Stack className={'card-box'}>
+					{/* <Stack className={'card-box'}>
 						{newModels.length === 0 ? (
 							<p className={'no-new'}>No new upcoming to show</p>
 						) : (
@@ -68,7 +68,7 @@ const NewModels = (props: NewModelsProps) => {
 								))}
 						</Swiper>
 						)}
-					</Stack>
+					</Stack> */}
 				</Stack>
 			</Stack>
 		);

@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import EastIcon from '@mui/icons-material/East';
 import WestIcon from '@mui/icons-material/West';
 import { Box, Stack } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Autoplay, Navigation, Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -70,7 +70,7 @@ const PopularModels = (props: PopularModelsProps) => {
 		return (
 			<Stack className={'popular-models'}>
 				<Stack className={'container'}>
-					<Stack className={'info-box'}>
+					{/* <Stack className={'info-box'}>
 						<span>{t("theMostSearchedCars")}</span>
 					</Stack>
 					<Stack className={'card-box'}>
@@ -91,7 +91,8 @@ const PopularModels = (props: PopularModelsProps) => {
 								))}
 							</Swiper>
 						)}
-					</Stack>
+					</Stack> */}
+					<h1>popular-models</h1>
 				</Stack>
 			</Stack>
 		);
