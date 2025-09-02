@@ -7,9 +7,10 @@ import { styled } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import React, { SyntheticEvent, useState } from 'react';
 import { GET_FAQS } from '../../../apollo/user/query';
+import { FaqCategory } from '../../enums/faq.enum';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { T } from '../../types/common';
-import { Faq } from '../../types/faq/faq';
+import type { Faq } from '../../types/faq/faq';
 import { FaqsInquiry } from '../../types/faq/faq.input';
 import Inquiry from './Inquiry';
 
@@ -88,7 +89,7 @@ const Faq: React.FC<FaqProps> = ({ initialInput = defaultInput }) => {
     input: {
       ...faqsInquiry,
       page: 1,
-      search: { faqCategory: formattedCategory },
+      search: { faqCategory: formattedCategory as FaqCategory},
     }
   });
 };

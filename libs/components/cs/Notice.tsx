@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import { GET_NOTICES } from '../../../apollo/user/query';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { T } from '../../types/common';
-import { Notice } from '../../types/notice/notice';
+import type { Notice } from '../../types/notice/notice';
 import { AllNoticesInquiry } from '../../types/notice/notice.input';
 
 interface NoticeProps {

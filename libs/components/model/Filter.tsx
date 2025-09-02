@@ -601,6 +601,7 @@ const Filter = (props: FilterType) => {
 								{modelYears.map((year: number) => (
 									<MenuItem
 										value={year}
+										//@ts-ignore
 										disabled={(searchFilter?.search?.periodsRange?.end || 0) < year}
 										key={year}
 									>
@@ -623,6 +624,7 @@ const Filter = (props: FilterType) => {
 								{modelYears.map((period: number) => (
 									<MenuItem
 										value={period}
+										//@ts-ignore
 										disabled={(searchFilter?.search?.periodsRange?.start || 1900) > period}
 										key={period}
 									>
@@ -640,6 +642,7 @@ const Filter = (props: FilterType) => {
 							type="number"
 							placeholder="$ min"
 							min={0}
+							//@ts-ignore
 							value={searchFilter?.search?.pricesRange?.start ?? 0}
 							onChange={(e: any) => {
 								if (e.target.value >= 0) {
@@ -651,6 +654,7 @@ const Filter = (props: FilterType) => {
 						<input
 							type="number"
 							placeholder="$ max"
+							//@ts-ignore
 							value={searchFilter?.search?.pricesRange?.end ?? 0}
 							onChange={(e: any) => {
 								if (e.target.value >= 0) {

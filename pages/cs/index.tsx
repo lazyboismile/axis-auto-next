@@ -68,9 +68,13 @@ const CS: NextPage = () => {
 					</Box>
 
 					<Box component={'div'} className={'cs-content'}>
-						{tab === 'notice' && <Notice />}
+						{	//@ts-ignore
+							tab === 'notice' && <Notice />
+						}
 
-						{tab === 'faq' && <Faq />}
+						{	//@ts-ignore
+							tab === 'faq' && <Faq />
+						}
 					</Box>
 				</Stack>
 			</Stack>

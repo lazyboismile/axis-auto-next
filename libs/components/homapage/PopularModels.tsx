@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Autoplay, Navigation, Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { GET_MODELS } from '../../../apollo/user/query';
+import { ModelBodyType } from '../../enums/model.enum';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { T } from '../../types/common';
 import { Model } from '../../types/model/model';
@@ -48,7 +49,7 @@ const PopularModels = (props: PopularModelsProps) => {
 			getModelsRefetch({
 				input: {
 					...initialInput,
-					search: { typeList: [selectedCategory.toUpperCase()] },
+					search: { typeList: [selectedCategory.toUpperCase() as ModelBodyType] },
 				},
 			}).then((res) => {
 				setPopularModels(res?.data?.getModels?.list || []);

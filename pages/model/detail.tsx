@@ -165,6 +165,7 @@ const ModelDetail: NextPage = ({ initialComment, ...props }: any) => {
 					sort: "createdAt",
 					direction: Direction.DESC,
 					search: {
+						// @ts-ignore
 						brandList: [model?.modelBrand],
 					},
 				},	

@@ -119,12 +119,14 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 
 	useEffect(() => {
 		if(searchFilter.search.memberId) {
+			//@ts-ignore
 			getModelsRefetch({ variables: { input: searchFilter } }).then();
 		}
 	}, [searchFilter]);
 
 	useEffect(() => {
 		if(commentInquiry.search.commentRefId) {
+			//@ts-ignore
 			getCommentsRefetch({ variables: { input: commentInquiry } }).then();
 		}
 	}, [commentInquiry]);
@@ -161,6 +163,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 				commentContent: '',
 			});
 
+			//@ts-ignore
 			await getCommentsRefetch({ variables: { input: commentInquiry } }).then();
 			await sweetTopSmallSuccessAlert('success', 800);
 		} catch (err: any) {

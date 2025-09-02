@@ -1,18 +1,19 @@
 import { Box, Stack } from '@mui/material';
 import { useTranslation } from 'next-i18next';
-import dynamic from 'next/dynamic';
+import SliderLib from 'react-slick';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 
-// @ts-ignore
-const Slider: React.ComponentType<any> = dynamic(() => import('react-slick'), { ssr: false });
 
-const images = [
+// Fix TypeScript error with react-slick
+const Slider: any = SliderLib;
+
+const images: string[] = [
   '/img/banner/header1.svg',
-//   '/img/banner/header5.jpg',
-//   '/img/banner/aboutBanner.jpg'
+  '/img/banner/header5.jpg',
+  '/img/banner/aboutBanner.jpg'
 ];
 
-const BannerHeader = () => {
+const BannerHeader: React.FC = () => {
   const device = useDeviceDetect();
   const { t } = useTranslation('common');
 
@@ -25,27 +26,45 @@ const BannerHeader = () => {
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 3000,
-    arrows: true
+    arrows: true,
   };
 
   if (device === 'mobile') {
-    return <div>BannerHeader MOBILE</div>;
+    return (
+      <Stack className="background">
+        <Box sx={{ textAlign: 'center', py: 5, fontSize: 18 }}>
+          {t('BannerHeader MOBILE')}
+        </Box>
+      </Stack>
+    );
   }
 
   return (
-    <Stack className={'background'}>
+    <Stack className="background">
       <Slider {...settings}>
-        <>
-          {images.map((src, index) => (
-            <Box key={index} className="slider">
-              <img src={src} alt={`slide-${index}`} />
-              <Box className={'slider-title'}>
-                <h3>{t('The World Largest Used Car Dealership')}</h3>
-                <h1>{t('Find Your Perfect Vehicle Online')}</h1>
-              </Box>
+        {images.map((src, index) => (
+          <Box key={index} className="slider" sx={{ position: 'relative' }}>
+            <img
+              src={src}
+              alt={`slide-${index}`}
+              style={{ width: '100%', display: 'block' }}
+            />
+            <Box
+              className="slider-title"
+              sx={{
+                position: 'absolute',
+                top: '30%',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                color: '#fff',
+                textAlign: 'center',
+              }}
+            >
+              <h3>{t('The World Largest Used Car Dealership')}</h3>
+              <h1>{t('Find Your Perfect Vehicle Online')}</h1>
             </Box>
-          ))}
-        </>
+          </Box>
+        ))}
       </Slider>
     </Stack>
   );
