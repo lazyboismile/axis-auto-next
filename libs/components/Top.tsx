@@ -495,4 +495,5 @@ Top.defaultProps = {
 	},
 };
 
+//@ts-ignore
 export default withRouter(Top);
