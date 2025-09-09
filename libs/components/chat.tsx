@@ -12,143 +12,208 @@ import { REACT_APP_API_URL } from '../config';
 import { sweetErrorAlert } from '../sweetAlert';
 import { Member } from '../types/member/member';
 
-interface MessagePayload {
-  event: string;
-  text: string;
-  memberData: Member;
-}
+const NewMessage = (type: any) => {
+	if (type === 'right') {
+		return (
+			<Box
+				component={'div'}
+				flexDirection={'row'}
+				style={{ display: 'flex' }}
+				alignItems={'flex-end'}
+				justifyContent={'flex-end'}
+				sx={{ m: '10px 0px' }}
+			>
+				<div className={'msg_right'}></div>
+			</Box>
+		);
+	} else {
+		return (
+			<Box flexDirection={'row'} style={{ display: 'flex' }} sx={{ m: '10px 0px' }} component={'div'}>
+				<Avatar alt={'jonik'} src={'/img/profile/defaultUser.svg'} />
+				<div className={'msg_left'}></div>
+			</Box>
+		);
+	}
+};
 
-interface InfoPayload {
-  event: string;
-  totalClients: number;
-  memberData: Member;
-  action: string;
-}
+interface MessagePayload {
+	event: string;
+	text: string;
+	memberData: Member;
+  }
+  
+  interface InfoPayload {
+	event: string;
+	totalClients: number;
+	memberData: Member;
+	action: string;
+  }
 
 const Chat = () => {
-  const chatContentRef = useRef<HTMLDivElement>(null);
-  const [messagesList, setMessagesList] = useState<MessagePayload[]>([]);
-  const [onlineUsers, setOnlineUsers] = useState<number>(0);
-  const [messageInput, setMessageInput] = useState<string>('');
-  const [open, setOpen] = useState(false);
-  const [openButton, setOpenButton] = useState(false);
-  const router = useRouter();
-  const user = useReactiveVar(userVar);
-  const socket = useReactiveVar(socketVar);
+	const chatContentRef = useRef<HTMLDivElement>(null);
+	const [messagesList, setMessagesList] = useState<MessagePayload[]>([]);
+	const [onlineUsers, setOnlineUsers] = useState<number>(0);
+	const textInput = useRef(null);
+	const [messageInput, setMessageInput] = useState<string>('');
+	const [open, setOpen] = useState(false);
+	const [openButton, setOpenButton] = useState(false);
+	const router = useRouter();
+	const user = useReactiveVar(userVar);
+	const socket = useReactiveVar(socketVar);
 
-  /** LIFECYCLES **/
-  useEffect(() => {
-    if (!socket) return;
-    socket.onmessage = (msg) => {
-      const data = JSON.parse(msg.data);
-      switch (data.event) {
-        case 'info':
-          setOnlineUsers(data.totalClients);
-          break;
-        case 'getMessages':
-          setMessagesList(data.list);
-          break;
-        case 'message':
-          if (!data.memberData) {
-            console.warn("Received message without memberData:", data);
-          }
-          setMessagesList((prev) => [...prev, data]);
-          break;
-      }
-    };
-  }, [socket]);
+	/** LIFECYCLES **/
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => setOpenButton(true), 100);
-    return () => clearTimeout(timeoutId);
-  }, []);
+	useEffect(() => {
+		if (!socket) return;
+		console.log("Socket connected");
+		socket.onmessage = (msg) => {
+			const data = JSON.parse(msg.data);
+			console.log("WebSocket message received:", data);
 
-  const handleOpenChat = () => setOpen((prev) => !prev);
+			switch (data.event) {
+				case 'info':
+					const newInfo: InfoPayload = data;
+					setOnlineUsers(newInfo.totalClients);
+					
+					// // Check if this is a new user joining
+					// if (newInfo.action === 'joined' && newInfo.memberData) {
+					// 	const joinedId = newInfo.memberData._id;
+					// 	const myId = user?._id;
+					  
+					// 	console.log('Someone joined:', joinedId);
+					// 	console.log('I am:', user?._id);
+					  
+					// 	if (joinedId !== myId) {
+					// 	  const memberNick = newInfo.memberData.memberNick;
+					// 	  sweetTopSmallSuccessAlert(`${memberNick} is connecting our Chat`);
+					// 	} else {
+					// 		sweetTopSmallSuccessAlert(`You are connecting our Chat`);
+					// 	}
+					//   }					  
+					break;
+				case 'getMessages':
+					const list: MessagePayload[] = data.list;
+					setMessagesList(list);
+					break;
+				case 'message':
+					const newMessage: MessagePayload = data;
+					messagesList.push(newMessage);
+					setMessagesList([...messagesList]);
+					break;
+			}
+		}
+	}, [socket, messagesList]);
 
-  const getInputMessageHandler = useCallback(
-    (e: any) => setMessageInput(e.target.value),
-    []
-  );
+	useEffect(() => {
+		const timeoutId = setTimeout(() => {
+			setOpenButton(true);
+		}, 100);
+		return () => clearTimeout(timeoutId);
+	}, []);
 
-  const getKeyHandler = (e: any) => e.key === 'Enter' && onClickHandler();
+	useEffect(() => {
+		setOpenButton(false);
+	}, [router.pathname]);
 
-  const onClickHandler = () => {
-    if (!messageInput) sweetErrorAlert('Please enter a message');
-    else {
-      socket.send(JSON.stringify({ event: 'message', data: messageInput }));
-      setMessageInput('');
-    }
-  };
+	/** HANDLERS **/
+	const handleOpenChat = () => {
+		setOpen((prevState) => !prevState);
+	};
 
-  const handleAvatarClick = (id: string) => {
-    router.push(`/member?memberId=${id}`);
-  };
+	const getInputMessageHandler = useCallback(
+		(e: any) => {
+			const text = e.target.value;
+			setMessageInput(text);
+		},
+		[messageInput],
+	);
 
-  return (
-    <Stack className="chatting">
-      {openButton && (
-        <button className="chat-button" onClick={handleOpenChat}>
-          {open ? <CloseFullscreenIcon /> : <MarkChatUnreadIcon />}
-        </button>
-      )}
+	const getKeyHandler = (e: any) => {
+		try {
+			if (e.key == 'Enter') {
+				onClickHandler();
+			}
+		} catch (err: any) {
+			console.log(err);
+		}
+	};
 
-      <Stack className={`chat-frame ${open ? 'open' : ''}`}>
-        <Box className="chat-top">
-          <div style={{ fontFamily: 'DM Sans' }}>Online Chat</div>
-          <RippleBadge badgeContent={onlineUsers} />
-        </Box>
+	const onClickHandler = () => {
+		if (!messageInput) sweetErrorAlert('Please enter a message');
+		else {
+			socket.send(JSON.stringify({
+			event: 'message',
+			data: messageInput,
+			}));
+			setMessageInput('');
+		}
+	};
 
-        <Box className="chat-content" ref={chatContentRef}>
-          <ScrollableFeed>
-            <Stack className="chat-main">
-              <Box className="welcome-box">
-                <div className="welcome">Welcome to Live chat!</div>
-              </Box>
+	return (
+		<Stack className="chatting">
+			{openButton ? (
+				<button className="chat-button" onClick={handleOpenChat}>
+					{open ? <CloseFullscreenIcon /> : <MarkChatUnreadIcon />}
+				</button>
+			) : null}
+			<Stack className={`chat-frame ${open ? 'open' : ''}`}>
+				<Box className={'chat-top'} component={'div'}>
+					<div style={{ fontFamily: 'Nunito' }}>Online Chat</div>
+					<RippleBadge style={{ margin: '-18px 0 0 21px' }} badgeContent={onlineUsers} />
+				</Box>
+				<Box className={'chat-content'} id="chat-content" ref={chatContentRef} component={'div'}>
+					<ScrollableFeed>
+						<Stack className={'chat-main'}>
+							<Box flexDirection={'row'} style={{ display: 'flex' }} sx={{ m: '10px 0px' }} component={'div'}>
+								<div className={'welcome'}>Welcome to Live chat!</div>
+							</Box>
+							{messagesList.map((ele: MessagePayload) => {
+								const {text, memberData} = ele;
+								const memberImage = memberData?.memberImage 
+									? `${REACT_APP_API_URL}/${memberData.memberImage}`
+									: '/img/profile/defaultUser.svg';
 
-              {messagesList.map((msg: MessagePayload, idx) => {
-                const { text, memberData } = msg;
-                const memberImage = memberData?.memberImage
-                  ? `${REACT_APP_API_URL}/${memberData.memberImage}`
-                  : '/img/profile/defaultUser.svg';
-
-                const isMine = memberData?._id === user?._id;
-
-                return (
-                  <Box
-                    key={idx}
-                    className={`msg-row ${isMine ? 'mine' : 'other'}`}
-                  >
-                    {!isMine && (
-                      <Avatar
-                        src={memberImage}
-                        alt={memberData.memberNick || "Unknown"}
-                        className="chat-avatar"
-                        onClick={() => memberData?._id && handleAvatarClick(memberData._id)}
-                      />
-                    )}
-                    <div className={isMine ? 'msg-right' : 'msg-left'}>{text}</div>
-                  </Box>
-                );
-              })}
-            </Stack>
-          </ScrollableFeed>
-        </Box>
-
-        <Box className="chat-bott">
-          <input
-            type="text"
-            placeholder="Type message"
-            value={messageInput}
-            onChange={getInputMessageHandler}
-            onKeyDown={getKeyHandler}
-          />
-          <button className="send-msg-btn" onClick={onClickHandler}>
-            <SendIcon style={{ color: '#fff' }} />
-          </button>
-        </Box>
-      </Stack>
-    </Stack>
-  );
+								return memberData?._id === user?._id ? (
+									<Box
+									component={'div'}
+									flexDirection={'row'}
+									style={{ display: 'flex' }}
+									alignItems={'flex-end'}
+									justifyContent={'flex-end'}
+									sx={{ m: '10px 0px' }}
+								>
+										<div className={'msg-right'}>{text}</div>
+									</Box>
+								) : (
+									<Box flexDirection={'row'} style={{ display: 'flex' }} sx={{ m: '10px 0px' }} component={'div'}>
+										<Avatar alt={'Tonny'} src={memberImage} />
+										<div className={'msg-left'}>{text}</div>
+									</Box>
+								);
+							})}
+						</Stack>
+					</ScrollableFeed>
+				</Box>
+				<Box className={'chat-bott'} component={'div'}>
+					<input
+						type={'text'}
+						name={'message'}
+						className={'msg-input'}
+						placeholder={'Type message'}
+						value={messageInput}
+						onChange={getInputMessageHandler}
+						onKeyDown={getKeyHandler}
+					/>
+					<button className={'send-msg-btn'} onClick={onClickHandler}>
+						<SendIcon style={{ color: '#fff' }} />
+					</button>
+				</Box>
+			</Stack>
+		</Stack>
+	);
 };
 
 export default Chat;
+function sweetSuccessAlert(arg0: string) {
+	throw new Error('Function not implemented.');
+}
