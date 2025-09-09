@@ -49,6 +49,9 @@ const Chat = () => {
           setMessagesList(data.list);
           break;
         case 'message':
+          if (!data.memberData) {
+            console.warn("Received message without memberData:", data);
+          }
           setMessagesList((prev) => [...prev, data]);
           break;
       }
@@ -118,9 +121,9 @@ const Chat = () => {
                     {!isMine && (
                       <Avatar
                         src={memberImage}
-                        alt={memberData.memberNick}
+                        alt={memberData.memberNick || "Unknown"}
                         className="chat-avatar"
-                        onClick={() => handleAvatarClick(memberData._id)}
+                        onClick={() => memberData?._id && handleAvatarClick(memberData._id)}
                       />
                     )}
                     <div className={isMine ? 'msg-right' : 'msg-left'}>{text}</div>
