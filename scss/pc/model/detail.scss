@@ -276,6 +276,8 @@
 								width: 100%;
 							}
 							.desc {
+								height: auto;
+								margin-bottom: 10px;
 								color: #181a20;
 								font-family: $font-dm;
 								font-size: 14px;
@@ -290,6 +292,28 @@
 							height: auto;
 							gap: 30px;
 							.title {
+								color: #181a20;
+								font-family: $font-dm;
+								font-size: 17px;
+								font-style: normal;
+								font-weight: 600;
+								line-height: normal;
+								.pluto {
+									position: relative;
+									top: -7px;
+									color: #717171;
+									font-size: 18px;
+								}
+								.icon-delear {
+									position: relative;
+									top: 5px;
+									margin-right: 6px;
+									width: 24px;
+									height: 24px;
+								}
+							}
+							.title-d {
+								margin-top: 30px;
 								color: #181a20;
 								font-family: $font-dm;
 								font-size: 17px;

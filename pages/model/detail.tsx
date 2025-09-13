@@ -10,7 +10,7 @@ import { NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import SwiperCore, { Autoplay, Navigation, Pagination } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -366,7 +366,7 @@ const ModelDetail: NextPage = ({ initialComment, ...props }: any) => {
 										<Typography className={'desc'}>{model?.modelDesc ?? 'No Description!'}</Typography>
 									</Stack>
 									<Stack className={'bottom'}>
-										<Typography className={'title'}>Car details<span className="pluto">ø</span></Typography>
+										<Typography className={'title-d'}>Car details<span className="pluto">ø</span></Typography>
 										<Stack className={'info-box'}>
 											<Stack className={'left'}>
 												<Box component={'div'} className={'info'}>
