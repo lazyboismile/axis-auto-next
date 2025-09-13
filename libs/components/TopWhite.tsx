@@ -2,7 +2,6 @@ import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { Logout } from '@mui/icons-material';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
-import SmartphoneIcon from '@mui/icons-material/Smartphone';
 import { Badge, Box, IconButton, Popover, Stack } from '@mui/material';
 import Button from '@mui/material/Button';
 import Menu, { MenuProps } from '@mui/material/Menu';
@@ -248,7 +247,6 @@ const TopWhite = (props: NotificationProps) => {
 							<Link href={'/cs'}>
 								<div> {t('CS')} </div>
 							</Link>
-								<Box><SmartphoneIcon/><span>+1 866 5468 7077</span></Box>
 						</Box>
 						<Box component={'div'} className={'user-box'}>
 							{user?._id ? (
