@@ -3,7 +3,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Box, Stack } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Autoplay, Navigation, Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -50,7 +50,7 @@ const TopAgents = (props: TopAgentsProps) => {
 					<Stack className={'info-box'}>
 						<span>{t("topAgents")}</span>
 					</Stack>
-					<Stack className={'wrapper'}>
+					{/* <Stack className={'wrapper'}>
 						<Swiper
 							className={'top-agents-swiper'}
 							slidesPerView={'auto'}
@@ -66,7 +66,7 @@ const TopAgents = (props: TopAgentsProps) => {
 								);
 							})}
 						</Swiper>
-					</Stack>
+					</Stack> */}
 				</Stack>
 			</Stack>
 		);
